@@ -13,7 +13,8 @@
   "dependencies": {
     "apollo-server": "^2.1.0",
     "graphql": "^14.0.2",
-    "graphql-import": "^0.7.1"
+    "graphql-import": "^0.7.1",
+    "neo4j-driver": "^1.7.0"
   },
   "devDependencies": {
     "@types/graphql": "^14.0.3",
