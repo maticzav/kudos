@@ -1,14 +1,3 @@
-type Workspace {
-  id: ID! @unique
-  createdAt: DateTime!
-  updatedAt: DateTime!
-
-  slackId: String! @unique
-  members: [Member!]! @relation(name: "WorkspaceMember", onDelete: CASCADE)
-  Conversations: [Conversation!]!
-    @relation(name: "WorkspaceConversation", onDelete: CASCADE)
-}
-
 type Conversation {
   id: ID! @unique
   createdAt: DateTime!
@@ -16,20 +5,8 @@ type Conversation {
 
   # Meta
   slackId: String! @unique
-  workspace: Workspace!
-    @relation(name: "WorkspaceConversation", onDelete: SET_NULL)
-  members: [Member!]! @relation(name: "ConversationMember", onDelete: SET_NULL)
-  type: ConversationType!
-
-  # Settings
   organiseCompetition: Boolean! @default(value: "false")
   sendEngagementMessages: Boolean! @default(value: "false")
-}
-
-enum ConversationType {
-  DIRECT_MESSAGE
-  GROUP
-  CHANNEL
 }
 
 type Member {
@@ -39,10 +16,6 @@ type Member {
 
   # Meta
   slackId: String! @unique
-  Conversations: [Conversation!]!
-    @relation(name: "ConversationMember", onDelete: SET_NULL)
-  workspace: Workspace! @relation(name: "WorkspaceMember", onDelete: SET_NULL)
-
   kudosSent: [Kudo!]! @relation(name: "KudoSender", onDelete: CASCADE)
   kudosReceived: [Kudo!]! @relation(name: "KudoReceiver", onDelete: SET_NULL)
 
@@ -65,7 +38,7 @@ type Kudo {
   # response: KudoResponse @relation(name: "KudoResponse", onDelete: CASCADE)
 
   # Settings
-  public: Boolean!
+  publish: Boolean!
 }
 
 # type KudoResponse {

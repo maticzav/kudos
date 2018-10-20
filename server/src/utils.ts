@@ -1,6 +1,8 @@
-import { Session } from 'neo4j-driver/types/v1'
+import { Prisma } from './generated/prisma'
+import { Slack } from './slack'
 
 export interface Context {
+  db: Prisma
+  slack: Slack
   request: any
-  neo4j: Session
 }

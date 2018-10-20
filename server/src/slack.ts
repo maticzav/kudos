@@ -5,6 +5,22 @@ export interface SlackOptions {
   apiToken: string
 }
 
+export interface SlackUser {
+  real_name: string
+  image_24: string
+  image_32: string
+  image_48: string
+  image_72: string
+  image_192: string
+  image_512: string
+}
+
+export interface SlackConversation {
+  id: string
+  name: string
+  creator: string
+}
+
 export class Slack {
   private organization: string
   private apiToken: string
@@ -18,35 +34,35 @@ export class Slack {
     return `https://${this.organization}.slack.com/api/${method}`
   }
 
-  async invite(email: string): Promise<boolean> {
-    const body = new URLSearchParams()
-
-    body.append('email', email)
-    body.append('token', this.apiToken)
-
-    const res = await fetch(this.getApiURL(`users.admin.invite`), {
+  async executeMethod<T>(method: string, body: any): Promise<T> {
+    return fetch(this.getApiURL(method), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body,
     }).then(res => res.json())
+  }
 
-    if (res.ok) {
-      return true
-    } else {
-      switch (res.error) {
-        case 'already_invited':
-          throw new Error('Izgleda, da smo te že povabili, preveri svoj mail!')
+  async getUser(slackId: string): Promise<SlackUser> {
+    const body = new URLSearchParams()
 
-        case 'already_in_team':
-          throw new Error(
-            'Izgleda, da si že prijavljen v Slack Gimnazije Bežigrad!',
-          )
+    body.append('user', slackId)
+    body.append('token', this.apiToken)
 
-        default:
-          throw new Error('Nekaj je šlo narobe.')
-      }
-    }
+    return this.executeMethod<any>('users.profile.get', body).then(
+      res => res.profile,
+    )
+  }
+
+  async getConversation(slackId: string): Promise<SlackConversation> {
+    const body = new URLSearchParams()
+
+    body.append('channel', slackId)
+    body.append('token', this.apiToken)
+
+    return this.executeMethod<any>('conversations.info', body).then(
+      res => res.channel,
+    )
   }
 }

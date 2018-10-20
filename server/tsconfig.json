@@ -6,11 +6,8 @@
     "sourceMap": true,
     "rootDir": "src",
     "outDir": "dist",
-    "lib": ["esnext", "dom"]
-  },
-  "typeRoots": [
-    "./@types",
-    // ...
-    "./node_modules/neo4j-driver/types/index.d.ts"
-  ]
+    "lib": [
+      "esnext", "dom"
+    ]
+  }
 }

@@ -1,28 +1,25 @@
 import { GraphQLServer } from 'graphql-yoga'
+import { Prisma } from './generated/prisma'
+import { Slack } from './slack'
 
 import { resolvers, fragmentReplacements } from './resolvers'
-
-import { getNeo4JSession } from './neo4j'
-import { Slack } from './slack'
 
 const server = new GraphQLServer({
   typeDefs: './src/schema.graphql',
   resolvers,
-  mocks: true,
   context: req => ({
     ...req,
-    // neo4j: getNeo4JSession(),
     slack: new Slack({
       organization: process.env.SLACK_ORGANIZATION,
       apiToken: process.env.SLACK_API_TOKEN,
     }),
+    db: new Prisma({
+      fragmentReplacements,
+      endpoint: process.env.PRISMA_ENDPOINT,
+      debug: true,
+      secret: process.env.PRISMA_SECRET,
+    }),
   }),
 })
 
-server
-  .start({
-    port: process.env.PORT,
-  })
-  .then(() => {
-    console.log(`Server listening on http://localhost:${process.env.PORT}`)
-  })
+server.start(() => console.log(`Server is running on http://localhost:4000`))

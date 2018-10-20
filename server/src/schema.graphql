@@ -1,50 +1,64 @@
+scalar DateTime
+
 type Query {
-  channelLeaderboard(where: ChannelWhere): Boolean
+  channelLeaderboard(
+    slackId: String!
+    take: Int
+    orderBy: LeaderboardOrder!
+  ): [Member!]!
+  getChannelWeeklyReport(slackId: String!): String!
+}
+
+enum LeaderboardOrder {
+  BEST_OVERALL
+  MOST_GIVEN_FIRST
+  MOST_RECIEVED_FIRST
 }
 
 type Mutation {
-  sendKudos(data: SendKudosInput): SendKudosPayload
+  createConversation(
+    slackId: String!
+    settings: ConversationSettingsInput!
+  ): Conversation!
+  updateConversation(
+    slackId: String!
+    settings: ConversationSettingsInput!
+  ): Conversation!
+  deleteConversation(slackId: String!): Conversation!
+
+  sendKudos(
+    senderSlackId: String!
+    recipientSlackId: String!
+    message: String
+  ): Kudo
 }
 
-# Input
+# Inputs
 
-input ChannelWhere {
-  channelId: String
+input ConversationSettingsInput {
+  organiseCompetition: Boolean!
+  sendEngagementMessages: Boolean!
 }
 
-input CreateWorkspaceInput {
-  members: [MemberInput!]!
-}
-
-input MemberInput {
-  foo: String
-}
-
-input SendKudosInput {
-  foo: String
+input SendKudoInput {
+  senderSlackId: String!
+  recipientSlackId: String!
+  conversationSlackId: String!
+  message: String
+  publish: Boolean!
 }
 
 # Payloads
 
-type SendKudosPayload {
+type CreateWorkspacePayload {
   success: Boolean!
 }
 
 # Types
 
-# type Workspace {
-#   id: ID!
-#   slackId: String!
-#   name: String!
-#   members: [Member!]!
-#   channels: [Channel!]!
-# }
-
-type Channel {
+type Conversation {
   id: ID!
   slackId: String!
-  name: String!
-  members: [Member!]!
   organiseCompetition: Boolean!
   sendEngagementMessages: Boolean!
 }
@@ -52,16 +66,30 @@ type Channel {
 type Member {
   id: ID!
   slackId: String!
-  name: String!
-  picture: String!
-
   kudosSent: [Kudo!]!
   kudosReceived: [Kudo!]!
+  receiveNotifications: Boolean!
 }
 
 type Kudo {
   id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  # Meta
   sentBy: Member!
   receivedBy: Member!
+  sentInConversation: Conversation!
+
   message: String
+  public: Boolean!
 }
+
+# type KudoResponse {
+#   id: ID! @unique
+#   createdAt: DateTime!
+#   updatedAt: DateTime!
+
+#   gif: String
+#   message: String
+# }
