@@ -9,20 +9,33 @@
     "prebuild": "npm run clean",
     "build": "tsc -d",
     "dev": "dotenv -- nodemon -e ts -x ts-node src/index.ts",
-    "generate": "graphql get-schema --project server; graphql codegen"
+    "generate": "dotenv -- graphql get-schema --project server; graphql codegen"
   },
   "dependencies": {
+    "apollo-link-http": "^1.5.5",
     "express": "^4.16.4",
+    "graphql": "^0.13",
+    "graphql-binding": "^2.2.6",
+    "graphql-import": "^0.7.1",
+    "graphql-tools": "^4.0.2",
+    "isomorphic-fetch": "^2.2.1",
     "neo4j-driver": "^1.7.0"
   },
   "devDependencies": {
     "@types/express": "^4.16.0",
+    "@types/isomorphic-fetch": "^0.0.34",
     "@types/node": "^10.12.0",
     "dotenv-cli": "^1.4.0",
+    "graphql-cli": "^2.16.7",
     "nodemon": "^1.18.4",
     "prettier": "^1.14.3",
     "rimraf": "^2.6.2",
     "ts-node": "6.2.0",
     "typescript": "2.9.2"
+  },
+  "resolutions": {
+    "apollo-link-http/**/graphql": "0.13.2",
+    "graphql-binding/**/graphql": "0.13.2",
+    "graphql-cli/**/graphql": "0.13.2"
   }
 }

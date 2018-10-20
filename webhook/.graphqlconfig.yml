@@ -7,5 +7,6 @@ projects:
       codegen:
         - generator: graphql-binding
           language: typescript
+          input: src/kudos.ts
           output:
-            binding: src/generated/prisma.ts
+            binding: src/generated/kudos.ts
