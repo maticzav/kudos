@@ -56,6 +56,10 @@ export interface Method {
 }
 
 function parser(args: string, lexer: RegExp): string[] {
+  if (!lexer) {
+    return []
+  }
+
   const parsedArguments = args.match(lexer)
 
   if (parsedArguments.length <= 1) {

@@ -2,7 +2,7 @@ import { Method } from './engine'
 
 export const methods: { [key: string]: Method } = {
   help: {
-    lexer: /.*/,
+    lexer: null,
     render: async () => ({
       text: `
 You can send kudos or get leaderboard!
@@ -71,19 +71,19 @@ Try the following commands:
     },
   },
   leaderboard: {
-    lexer: /.*/,
+    lexer: null,
     render: async (req, cmd, args) => {
       const conversationSlackId = cmd.channel_id
 
       const res: any = await req.gql.request(
         `
-      query channelLeaderboard($slackId: String!) {
+      query ChannelLeaderboard($slackId: String!) {
         channelLeaderboard(slackId: $slackId, timePeriod: LAST_WEEK) {
-          topReceivers{
+          topReceivers {
             slackId
             score
           }
-          topSenders{
+          topSenders {
             slackId
             score
           }
@@ -96,7 +96,9 @@ Try the following commands:
       )
 
       return {
-        text: `These is the top receivers <@${res.topReceivers[0]})!`,
+        text: `These are the top receivers <@${
+          res.channelLeaderboard.topReceivers[0].slackId
+        }>`,
       }
     },
   },
