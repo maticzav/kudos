@@ -1,4 +1,5 @@
 import * as express from 'express'
+import * as bodyParser from 'body-parser'
 
 // Routes
 
@@ -13,6 +14,13 @@ if (!process.env.PORT) {
 // Webhook
 
 const webhook = express()
+
+webhook.use(
+  bodyParser.urlencoded({
+    extended: true,
+  }),
+)
+webhook.use(bodyParser.json())
 
 webhook.use('/', send)
 
