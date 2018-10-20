@@ -1,5 +1,9 @@
 import * as express from 'express'
 
+// Routes
+
+import send from './routes/send'
+
 // Config validation
 
 if (!process.env.PORT) {
@@ -10,7 +14,7 @@ if (!process.env.PORT) {
 
 const webhook = express()
 
-webhook.use('/')
+webhook.use('/', send)
 
 // Start
 

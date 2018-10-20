@@ -11,21 +11,18 @@
     "dev": "dotenv -- nodemon -e ts,graphql -x ts-node src/index.ts"
   },
   "dependencies": {
-    "graphql": "0.13",
-    "graphql-import": "^0.7.1",
     "graphql-yoga": "^1.16.7",
     "isomorphic-fetch": "^2.2.1",
     "neo4j-driver": "^1.7.0"
   },
   "devDependencies": {
-    "@types/graphql": "0.13",
     "@types/isomorphic-fetch": "^0.0.34",
     "@types/node": "^10.12.0",
     "dotenv-cli": "^1.4.0",
     "graphql-cli": "^2.16.7",
     "nodemon": "^1.18.4",
     "prettier": "^1.14.3",
-    "prisma-binding": "^2.1.6",
+    "prisma": "^1.18.1",
     "rimraf": "^2.6.2",
     "ts-node": "7.0.1",
     "typescript": "3.1.3"

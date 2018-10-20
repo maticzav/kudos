@@ -1,37 +1,44 @@
 type Query {
-  
+  channelLeaderboard(where: ChannelWhere): Boolean
 }
 
 type Mutation {
-  # Setup
-  createWorkspace(data: CreateWorkspaceInput): Workspace
-  # Kudos
   sendKudos(data: SendKudosInput): SendKudosPayload
-}
-
-type Subscriptions {
-
 }
 
 # Input
 
+input ChannelWhere {
+  channelId: String
+}
+
 input CreateWorkspaceInput {
-  
+  members: [MemberInput!]!
+}
+
+input MemberInput {
+  foo: String
 }
 
 input SendKudosInput {
+  foo: String
+}
 
+# Payloads
+
+type SendKudosPayload {
+  success: Boolean!
 }
 
 # Types
 
-type Workspace {
-  id: ID!
-  slackId: String!
-  name: String!
-  members: [Member!]!
-  channels: [Channel!]!
-}
+# type Workspace {
+#   id: ID!
+#   slackId: String!
+#   name: String!
+#   members: [Member!]!
+#   channels: [Channel!]!
+# }
 
 type Channel {
   id: ID!

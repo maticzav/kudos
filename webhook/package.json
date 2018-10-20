@@ -8,14 +8,17 @@
     "start": "node dist/index.js",
     "prebuild": "npm run clean",
     "build": "tsc -d",
-    "dev": "dotenv -- nodemon -e ts -x ts-node src/index.ts"
+    "dev": "dotenv -- nodemon -e ts -x ts-node src/index.ts",
+    "generate": "graphql get-schema --project server; graphql codegen"
   },
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "graphql-binding": "^2.2.6"
   },
   "devDependencies": {
     "@types/express": "^4.16.0",
     "dotenv-cli": "^1.4.0",
+    "graphql-cli": "^2.16.7",
     "nodemon": "^1.18.4",
     "prettier": "^1.14.3",
     "rimraf": "^2.6.2",
