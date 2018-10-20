@@ -98,14 +98,14 @@ Try the following commands:
       return {
         text: `
 These is the top receivers: 🏆\n
-    🥇 <@${res.channelLeaderboard.topReceivers[0]}>\n
-    🥈 <@${res.channelLeaderboard.topReceivers[1]}>\n
-    🥉 <@${res.channelLeaderboard.topReceivers[2]}>\n
+    🥇 <@${res.channelLeaderboard.topReceivers[0].slackId}>\n
+    🥈 <@${res.channelLeaderboard.topReceivers[1].slackId}>\n
+    🥉 <@${res.channelLeaderboard.topReceivers[2].slackId}>\n
 \n
 These is the top givers: ⛑\n
-    🥇 <@${res.channelLeaderboard.topSenders[0]}>\n
-    🥈 <@${res.channelLeaderboard.topSenders[1]}>\n
-    🥉 <@${res.channelLeaderboard.topSenders[2]}>\n
+    🥇 <@${res.channelLeaderboard.topSenders[0].slackId}>\n
+    🥈 <@${res.channelLeaderboard.topSenders[1].slackId}>\n
+    🥉 <@${res.channelLeaderboard.topSenders[2].slackId}>\n
     💩 Everybody else
         `,
       }
