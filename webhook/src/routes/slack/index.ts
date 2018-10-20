@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { run } from './engine'
+import { handleSubscriptionEvent } from './subscriptions'
 
 // Router
 
@@ -11,7 +12,7 @@ slack.post('/', async (req, res) => {
   res.send(executed)
 })
 
-slack.post('/events', async (req, res) => {
+slack.post('/actions', async (req, res) => {
   const payload = JSON.parse(req.body.payload)
 
   switch (payload.callback_id) {
@@ -24,6 +25,22 @@ slack.post('/events', async (req, res) => {
       return res.send({
         text: 'Kudo shared!',
       })
+    }
+    default: {
+      return res.sendStatus(200)
+    }
+  }
+})
+
+slack.post('/events', async (req, res) => {
+  switch (req.body.type) {
+    case 'url_verification': {
+      return res.send(req.body.challenge)
+    }
+    case 'event_callback': {
+      const exec = await handleSubscriptionEvent(req, req.body.event)
+
+      return res.sendStatus(200)
     }
     default: {
       return res.sendStatus(200)
