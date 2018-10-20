@@ -12,7 +12,8 @@
     "generate": "graphql get-schema --project server; graphql codegen"
   },
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "neo4j-driver": "^1.7.0"
   },
   "devDependencies": {
     "@types/express": "^4.16.0",
