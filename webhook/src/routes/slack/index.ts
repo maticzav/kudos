@@ -24,6 +24,7 @@ slack.post('/actions', async (req, res) => {
           const kudoId = action.value
 
           return res.send({
+            response_type: 'in_channel',
             text: 'Kudo shared!',
           })
         }
