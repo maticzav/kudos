@@ -96,9 +96,16 @@ Try the following commands:
       )
 
       return {
-        text: `These are the top receivers <@${
-          res.channelLeaderboard.topReceivers[0].slackId
-        }>`,
+        text: `These is the top receivers: 🏆\n
+        🥇 <@${res.channelLeaderboard.topReceivers[0]}>\n
+        🥈 <@${res.channelLeaderboard.topReceivers[1]}>\n
+        🥉 <@${res.channelLeaderboard.topReceivers[2]}>\n
+        \n
+        These is the top givers: ⛑\n
+        🥇 <@${res.channelLeaderboard.topSenders[0]}>\n
+        🥈 <@${res.channelLeaderboard.topSenders[1]}>\n
+        🥉 <@${res.channelLeaderboard.topSenders[2]}>\n
+        `,
       }
     },
   },
