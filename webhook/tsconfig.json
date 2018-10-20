@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "sourceMap": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "lib": ["esnext", "dom"]
+  },
+  "typeRoots": [
+    "./@types",
+    // ...
+    "./node_modules/neo4j-driver/types/index.d.ts"
+  ]
+}
