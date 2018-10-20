@@ -10,8 +10,11 @@
     "build": "tsc -d",
     "dev": "dotenv -- nodemon -e ts -x ts-node src/index.ts"
   },
-  "dependencies": {},
+  "dependencies": {
+    "express": "^4.16.4"
+  },
   "devDependencies": {
+    "@types/express": "^4.16.0",
     "dotenv-cli": "^1.4.0",
     "nodemon": "^1.18.4",
     "prettier": "^1.14.3",
