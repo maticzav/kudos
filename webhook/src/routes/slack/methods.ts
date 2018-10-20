@@ -106,7 +106,8 @@ These is the top givers: ⛑\n
     🥇 <@${res.channelLeaderboard.topSenders[0].slackId}>\n
     🥈 <@${res.channelLeaderboard.topSenders[1].slackId}>\n
     🥉 <@${res.channelLeaderboard.topSenders[2].slackId}>\n
-    💩 Everybody else
+\n
+💩 Everybody else
         `,
       }
     },
