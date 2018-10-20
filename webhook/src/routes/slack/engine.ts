@@ -16,7 +16,9 @@ interface SlackAttachment {
   author_name?: string
   title?: string
   text: string
-  actions: SlackAction[]
+  callback_id?: string
+  color?: string
+  actions?: SlackAction[]
   image_url?: string
   thumb_url?: string
 }
@@ -26,7 +28,7 @@ interface SlackAction {
   text: string
   type: string
   value: string
-  style: string
+  style?: string
 }
 
 interface SlackCommand {
@@ -48,47 +50,102 @@ interface Method {
   render: (
     req: Request,
     slackCommand: SlackCommand,
-    args?: any,
+    args?: string[],
   ) => Promise<SlackResponse>
 }
 
 const methods: { [key: string]: Method } = {
   help: {
-    lexer: /a/,
+    lexer: /.*/,
     render: async () => ({
       text: `
-      You can send kudos or get leaderboard!
+You can send kudos or get leaderboard!
 
-      Try the following commands:
-        /kudos send @user and /kudos leaderboard
+Try the following commands:
+  /kudos send @user and /kudos leaderboard
     `,
     }),
   },
   send: {
-    lexer: /a/,
-    render: async (req, args) => {
-      const kudo = req.kudos
+    lexer: /^<@(.*)\|(.*)>.?(.*)/,
+    render: async (req, cmd, args) => {
+      const [, recipientSlackId, recipientName] = args
+
+      if (!recipientSlackId) {
+        return { text: 'No recipient defined...' }
+      }
+
+      const kudo = { id: 'fo' }
 
       return {
-        text: `You sent kudos to ${args}`,
+        text: `You sent kudos to <@${recipientSlackId}>!`,
+        attachments: [
+          {
+            text: 'Do you want to share it with other members of this channel?',
+            callback_id: 'share_kudo',
+            color: '#3AA3E3',
+            actions: [
+              {
+                name: 'share',
+                type: 'button',
+                value: kudo.id,
+                text: 'Yes, Share!',
+              },
+              {
+                name: 'dont-share',
+                type: 'button',
+                value: 'cancel',
+                text: 'Nah...',
+              },
+            ],
+          },
+        ],
+      }
+    },
+  },
+  leaderboard: {
+    lexer: /.*/,
+    render: async () => {
+      return {
+        text: 'This is our leaderboard!',
       }
     },
   },
 }
 
-function run(req: Request, slackCommand: SlackCommand) {
-  const [command, unparsedArguments] = slackCommand.text.split(' ')
+function parser(args: string, lexer: RegExp): string[] {
+  const parsedArguments = args.match(lexer)
+
+  if (parsedArguments.length <= 1) {
+    throw new Error(`Couldn't parse ${args} with ${lexer}`)
+  }
+
+  return parsedArguments
+}
+
+export async function run(
+  req: Request,
+  slackCommand: SlackCommand,
+): Promise<SlackResponse> {
+  const [command, ...unparsedArguments] = slackCommand.text.split(' ')
 
   if (!command) {
-    return `No command specified. Try \kudos help!`
+    return { text: `No command specified. Try \kudos help!` }
   }
 
   if (!command || !methods.hasOwnProperty(command)) {
-    return `Couldn't find command ${command}. Try \kudos help!`
+    return { text: `Couldn't find command ${command}. Try \kudos help!` }
   }
 
-  const method = methods[command]
-  const parsedArguments = unparsedArguments.match(method.lexer)
-
-  return method.render(req, slackCommand, parsedArguments)
+  try {
+    const method = methods[command]
+    if (unparsedArguments) {
+      const parsedArguments = parser(unparsedArguments.join(' '), method.lexer)
+      return method.render(req, slackCommand, parsedArguments)
+    } else {
+      return method.render(req, slackCommand, [])
+    }
+  } catch (err) {
+    return { text: `Incorrect arguments provided...` }
+  }
 }
