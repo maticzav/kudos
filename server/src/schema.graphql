@@ -3,10 +3,14 @@ scalar DateTime
 type Query {
   channelLeaderboard(
     slackId: String!
-    take: Int
-    orderBy: LeaderboardOrder!
-  ): [Member!]!
-  getChannelWeeklyReport(slackId: String!): String!
+    timePeriod: LeaderboardTimeperiod!
+  ): LeaderboardPayload!
+}
+
+enum LeaderboardTimeperiod {
+  LAST_WEEK
+  LAST_MONTH
+  LAST_YEAR
 }
 
 enum LeaderboardOrder {
@@ -54,6 +58,12 @@ type CreateWorkspacePayload {
   success: Boolean!
 }
 
+type LeaderboardPayload {
+  topReceivers: [LeaderboardMember]!
+  topSenders: [LeaderboardMember]!
+  topScorers: [LeaderboardMember]!
+}
+
 # Types
 
 type Conversation {
@@ -83,6 +93,11 @@ type Kudo {
 
   message: String
   public: Boolean!
+}
+
+type LeaderboardMember {
+  slackId: String!
+  score: Int!
 }
 
 # type KudoResponse {

@@ -1,4 +1,5 @@
 import * as fetch from 'isomorphic-fetch'
+import { URLSearchParams } from 'url'
 
 export interface SlackOptions {
   organization: string
@@ -55,7 +56,7 @@ export class Slack {
     )
   }
 
-  async getConversation(slackId: string): Promise<SlackConversation> {
+  async getConversationInfo(slackId: string): Promise<SlackConversation> {
     const body = new URLSearchParams()
 
     body.append('channel', slackId)
@@ -63,6 +64,17 @@ export class Slack {
 
     return this.executeMethod<any>('conversations.info', body).then(
       res => res.channel,
+    )
+  }
+
+  async getConversationMembers(slackId: string): Promise<Array<string>> {
+    const body = new URLSearchParams()
+
+    body.append('channel', slackId)
+    body.append('token', this.apiToken)
+
+    return this.executeMethod<any>('conversations.members', body).then(
+      res => res.members,
     )
   }
 }

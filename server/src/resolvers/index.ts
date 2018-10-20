@@ -1,10 +1,12 @@
 import { extractFragmentReplacements } from 'prisma-binding'
-import { Query } from './Query'
 import { Mutation } from './Mutation'
+import { Query } from './Query'
+import { LeaderboardPayload } from './LeaderboardPayload'
 
 export const resolvers = {
-  Query,
   Mutation,
+  Query,
+  LeaderboardPayload,
 }
 
 export const fragmentReplacements = extractFragmentReplacements(resolvers)
