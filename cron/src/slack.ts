@@ -19,9 +19,6 @@ export interface SlackUser {
 export interface SlackConversation {
   id: string
   name: string
-  is_channel: string
-  is_group: string
-  is_im: string
   creator: string
 }
 
@@ -56,16 +53,6 @@ export class Slack {
 
     return this.executeMethod<any>('users.profile.get', body).then(
       res => res.profile,
-    )
-  }
-
-  async getConversationList(slackId: string): Promise<SlackConversation> {
-    const body = new URLSearchParams()
-
-    body.append('token', this.apiToken)
-
-    return this.executeMethod<any>('conversations.list', body).then(
-      res => res.channels,
     )
   }
 
