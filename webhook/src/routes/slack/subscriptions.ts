@@ -8,20 +8,72 @@ interface SlackEvent {
 export async function handleSubscriptionEvent(req: Request, event: SlackEvent) {
   switch (event.type) {
     case 'channel_created': {
-      console.log('new channel')
-      return
+      const channel = await req.gql.request(
+        `
+        mutation CreateConversation($slackId: String!, $settings: ConversationSettingsInput!) {
+          createConversation(slackId: $slackId, settings: $settings) {
+            id
+          }
+        }
+      `,
+        {
+          slackId: event.channel.id,
+          settings: {
+            organiseCompetition: false,
+            sendEngagementMessages: false,
+          },
+        },
+      )
+
+      return channel
     }
     case 'channel_deleted': {
-      console.log('deleted channel')
-      return
+      const channel = await req.gql.request(
+        `
+        mutation DeleteConversation($slackId: String!) {
+          deleteConversation(slackId: $slackId) {
+            id
+          }
+        }
+      `,
+        { slackId: event.channel },
+      )
+
+      return channel
     }
     case 'group_open': {
-      console.log('new channel')
-      return
+      const channel = await req.gql.request(
+        `
+        mutation CreateConversation($slackId: String!, $settings: ConversationSettingsInput!) {
+          createConversation(slackId: $slackId, settings: $settings) {
+            id
+          }
+        }
+      `,
+        {
+          slackId: event.channel,
+          settings: {
+            organiseCompetition: false,
+            sendEngagementMessages: false,
+          },
+        },
+      )
+
+      return channel
     }
     case 'group_deleted': {
-      console.log('deleted channel')
-      return
+      const channel = await req.gql.request(
+        `
+        mutation DeleteConversation($slackId: String!) {
+          deleteConversation(slackId: $slackId) {
+            id
+          }
+        }
+      `,
+        { slackId: event.channel },
+      )
+
+      return channel
     }
   }
 }

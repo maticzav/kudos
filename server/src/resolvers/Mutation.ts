@@ -61,14 +61,27 @@ export const Mutation = {
         data: {
           sentBy: { connect: { id: sender.id } },
           receivedBy: { connect: { id: receiver.id } },
-          sentInConversation: { connect: { id: data.conversationSlackId } },
+          sentInConversation: {
+            connect: { slackId: data.conversationSlackId },
+          },
           message: data.message,
-          publish: data.publish,
+          publish: false,
         },
       },
       info,
     )
 
     return kudo
+  },
+  async publishKudos(parent, { id }, ctx: Context, info) {
+    const conversation = await ctx.db.mutation.updateKudo(
+      {
+        where: { id },
+        data: { publish: true },
+      },
+      info,
+    )
+
+    return conversation
   },
 }

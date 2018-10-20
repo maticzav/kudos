@@ -6,6 +6,7 @@ import { KudosBinding } from './kudos'
 // Routes
 
 import slack from './routes/slack'
+import { GraphQLClient } from 'graphql-request'
 
 // Config validation
 
@@ -35,9 +36,7 @@ webhook.use((req, res, next) => {
     organization: process.env.SLACK_ORGANIZATION,
     apiToken: process.env.SLACK_API_TOKEN,
   })
-  req.kudos = new KudosBinding({
-    uri: process.env.KUDOS_ENDPOINT,
-  })
+  req.gql = new GraphQLClient(process.env.KUDOS_ENDPOINT)
   next()
 })
 

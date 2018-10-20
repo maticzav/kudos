@@ -29,12 +29,9 @@ type Mutation {
     settings: ConversationSettingsInput!
   ): Conversation!
   deleteConversation(slackId: String!): Conversation!
-
-  sendKudos(
-    senderSlackId: String!
-    recipientSlackId: String!
-    message: String
-  ): Kudo
+  # Kudos
+  sendKudos(data: SendKudoInput): Kudo
+  publishKudos(id: ID!): Kudo
 }
 
 # Inputs
@@ -49,7 +46,6 @@ input SendKudoInput {
   recipientSlackId: String!
   conversationSlackId: String!
   message: String
-  publish: Boolean!
 }
 
 # Payloads

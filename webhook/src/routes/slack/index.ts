@@ -18,13 +18,21 @@ slack.post('/actions', async (req, res) => {
   switch (payload.callback_id) {
     case 'share_kudo': {
       const [action] = payload.actions
-      const kudoId = action.value
 
-      console.log(kudoId)
+      switch (action.name) {
+        case 'share': {
+          const kudoId = action.value
 
-      return res.send({
-        text: 'Kudo shared!',
-      })
+          return res.send({
+            text: 'Kudo shared!',
+          })
+        }
+        case 'dont-share': {
+          return res.send({
+            text: 'Maybe next time...',
+          })
+        }
+      }
     }
     default: {
       return res.sendStatus(200)

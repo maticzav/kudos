@@ -1,5 +1,5 @@
 import * as fetch from 'isomorphic-fetch'
-import { Binding } from 'graphql-binding'
+import { Binding } from './generated/kudos'
 import { HttpLink } from 'apollo-link-http'
 import { importSchema } from 'graphql-import'
 import { makeRemoteExecutableSchema } from 'graphql-tools'

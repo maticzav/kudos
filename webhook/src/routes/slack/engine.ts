@@ -1,17 +1,18 @@
 import { Request } from 'express'
+import { methods } from './methods'
 
-enum SlackResponseType {
+export enum SlackResponseType {
   'in_channel',
   'ephemeral',
 }
 
-interface SlackResponse {
+export interface SlackResponse {
   text: string
   response_type?: SlackResponseType
   attachments?: SlackAttachment[]
 }
 
-interface SlackAttachment {
+export interface SlackAttachment {
   pretext?: string
   author_name?: string
   title?: string
@@ -23,7 +24,7 @@ interface SlackAttachment {
   thumb_url?: string
 }
 
-interface SlackAction {
+export interface SlackAction {
   name: string
   text: string
   type: string
@@ -31,7 +32,7 @@ interface SlackAction {
   style?: string
 }
 
-interface SlackCommand {
+export interface SlackCommand {
   token: string
   team_id: string
   team_domain: string
@@ -45,72 +46,13 @@ interface SlackCommand {
   trigger_id: string
 }
 
-interface Method {
+export interface Method {
   lexer: RegExp
   render: (
     req: Request,
     slackCommand: SlackCommand,
     args?: string[],
   ) => Promise<SlackResponse>
-}
-
-const methods: { [key: string]: Method } = {
-  help: {
-    lexer: /.*/,
-    render: async () => ({
-      text: `
-You can send kudos or get leaderboard!
-
-Try the following commands:
-  /kudos send @user and /kudos leaderboard
-    `,
-    }),
-  },
-  send: {
-    lexer: /^<@(.*)\|(.*)>.?(.*)/,
-    render: async (req, cmd, args) => {
-      const [, recipientSlackId, recipientName] = args
-
-      if (!recipientSlackId) {
-        return { text: 'No recipient defined...' }
-      }
-
-      const kudo = { id: 'fo' }
-
-      return {
-        text: `You sent kudos to <@${recipientSlackId}>!`,
-        attachments: [
-          {
-            text: 'Do you want to share it with other members of this channel?',
-            callback_id: 'share_kudo',
-            color: '#3AA3E3',
-            actions: [
-              {
-                name: 'share',
-                type: 'button',
-                value: kudo.id,
-                text: 'Yes, Share!',
-              },
-              {
-                name: 'dont-share',
-                type: 'button',
-                value: 'cancel',
-                text: 'Nah...',
-              },
-            ],
-          },
-        ],
-      }
-    },
-  },
-  leaderboard: {
-    lexer: /.*/,
-    render: async () => {
-      return {
-        text: 'This is our leaderboard!',
-      }
-    },
-  },
 }
 
 function parser(args: string, lexer: RegExp): string[] {

@@ -4,9 +4,6 @@ projects:
     extensions:
       endpoints:
         default: http://localhost:4000
-      codegen:
-        - generator: graphql-binding
-          language: typescript
-          input: src/kudos.ts
-          output:
-            binding: src/generated/kudos.ts
+      prepare-binding:
+        generator: binding-ts
+        output: src/generated/kudos.ts
