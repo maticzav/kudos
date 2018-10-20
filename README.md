@@ -1,5 +1,11 @@
 # Kudos
 
+## Development setup
+
+```bash
+docker-compose up -d
+```
+
 ## Messages
 
 ```
