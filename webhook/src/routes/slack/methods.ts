@@ -72,9 +72,31 @@ Try the following commands:
   },
   leaderboard: {
     lexer: /.*/,
-    render: async () => {
+    render: async (req, cmd, args) => {
+      const conversationSlackId = cmd.channel_id
+
+      const res: any = await req.gql.request(
+        `
+      query channelLeaderboard($slackId: String!) {
+        channelLeaderboard(slackId: $slackId, timePeriod: LAST_WEEK) {
+          topReceivers{
+            slackId
+            score
+          }
+          topSenders{
+            slackId
+            score
+          }
+        }
+      }
+      `,
+        {
+          slackId: conversationSlackId,
+        },
+      )
+
       return {
-        text: 'This is our leaderboard!',
+        text: `These is the top receivers <@${res.topReceivers[0]})!`,
       }
     },
   },
