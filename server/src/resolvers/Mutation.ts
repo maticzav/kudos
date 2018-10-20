@@ -1,6 +1,31 @@
 import { Context } from '../utils'
 
 export const Mutation = {
+  async createWorkspace(parent, args, ctx: Context, info) {
+    try {
+      const conversations = await ctx.slack.getConversationList()
+
+      const conversationPromises = conversations.map(async conversation => {
+        return ctx.db.mutation.upsertConversation({
+          where: {
+            slackId: conversation.id,
+          },
+          create: {
+            slackId: conversation.id,
+            organiseCompetition: false,
+            sendEngagementMessages: false,
+          },
+          update: {},
+        })
+      })
+
+      await Promise.all(conversationPromises)
+
+      return { success: true }
+    } catch (err) {
+      return { success: false }
+    }
+  },
   async createConversation(parent, { slackId, settings }, ctx: Context, info) {
     const conversation = await ctx.db.mutation.createConversation(
       {

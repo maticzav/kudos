@@ -59,7 +59,7 @@ export class Slack {
     )
   }
 
-  async getConversationList(slackId: string): Promise<SlackConversation> {
+  async getConversationList(): Promise<SlackConversation[]> {
     const body = new URLSearchParams()
 
     body.append('token', this.apiToken)

@@ -20,6 +20,7 @@ enum LeaderboardOrder {
 }
 
 type Mutation {
+  createWorkspace: CreateWorkspacePayload!
   createConversation(
     slackId: String!
     settings: ConversationSettingsInput!
