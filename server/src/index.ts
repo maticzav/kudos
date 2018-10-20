@@ -1,4 +1,4 @@
-import { ApolloServer, gql } from 'apollo-server'
+import { GraphQLServer } from 'graphql-yoga'
 import { importSchema } from 'graphql-import'
 
 import { resolvers, fragmentReplacements } from './resolvers'
@@ -6,15 +6,15 @@ import { resolvers, fragmentReplacements } from './resolvers'
 import { getNeo4JSession } from './neo4j'
 import { Slack } from './slack'
 
-const typeDefs = gql(importSchema('./src/schema.graphql'))
+const typeDefs = importSchema('./src/schema.graphql')
 
-const server = new ApolloServer({
+const server = new GraphQLServer({
   typeDefs,
   resolvers,
   mocks: true,
   context: req => ({
     ...req,
-    neo4j: getNeo4JSession(),
+    // neo4j: getNeo4JSession(),
     slack: new Slack({
       organization: process.env.SLACK_ORGANIZATION,
       apiToken: process.env.SLACK_API_TOKEN,
@@ -22,6 +22,10 @@ const server = new ApolloServer({
   }),
 })
 
-server.listen().then(({ url }) => {
-  console.log(`Server listening on ${url}`)
-})
+server
+  .start({
+    port: process.env.PORT,
+  })
+  .then(() => {
+    console.log(`Server listening on http://localhost:${process.env.PORT}`)
+  })

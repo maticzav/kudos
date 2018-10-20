@@ -1,0 +1,66 @@
+type Workspace {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  slackId: String! @unique
+  members: [Member!]! @relation(name: "WorkspaceMember", onDelete: CASCADE)
+  channels: [Channel!]! @relation(name: "WorkspaceChannel", onDelete: CASCADE)
+}
+
+type Channel {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  # Meta
+  slackId: String! @unique
+  workspace: Workspace! @relation(name: "WorkspaceChannel", onDelete: SET_NULL)
+  members: [Member!]! @relation(name: "ChannelMember", onDelete: SET_NULL)
+
+  # Settings
+  organiseCompetition: Boolean! @default(value: "false")
+  sendEngagementMessages: Boolean! @default(value: "false")
+}
+
+type Member {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  # Meta
+  slackId: String! @unique
+  channels: [Channel!]! @relation(name: "ChannelMember", onDelete: SET_NULL)
+  workspace: Workspace! @relation(name: "WorkspaceMember", onDelete: SET_NULL)
+
+  kudosSent: [Kudo!]! @relation(name: "KudoSender", onDelete: CASCADE)
+  kudosReceived: [Kudo!]! @relation(name: "KudoReceiver", onDelete: SET_NULL)
+
+  # Settings
+  receiveNotifications: Boolean! @default(value: "true")
+}
+
+type Kudo {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+  # Meta
+  sentBy: Member! @relation(name: "KudoSender", onDelete: SET_NULL)
+  receivedBy: Member! @relation(name: "KudoReceiver", onDelete: SET_NULL)
+  sentInChannel: Channel! @relation(name: "KudoInChannel", onDelete: SET_NULL)
+
+  # response: KudoResponse @relation(name: "KudoResponse", onDelete: CASCADE)
+
+  # Settings
+  public: Boolean!
+}
+
+# type KudoResponse {
+#   id: ID! @unique
+#   createdAt: DateTime!
+#   updatedAt: DateTime!
+
+#   gif: String
+#   message: String
+# }
