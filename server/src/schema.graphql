@@ -1,3 +1,60 @@
 type Query {
-  hello: String!
+  
+}
+
+type Mutation {
+  # Setup
+  createWorkspace(data: CreateWorkspaceInput): Workspace
+  # Kudos
+  sendKudos(data: SendKudosInput): SendKudosPayload
+}
+
+type Subscriptions {
+
+}
+
+# Input
+
+input CreateWorkspaceInput {
+  
+}
+
+input SendKudosInput {
+
+}
+
+# Types
+
+type Workspace {
+  id: ID!
+  slackId: String!
+  name: String!
+  members: [Member!]!
+  channels: [Channel!]!
+}
+
+type Channel {
+  id: ID!
+  slackId: String!
+  name: String!
+  members: [Member!]!
+  organiseCompetition: Boolean!
+  sendEngagementMessages: Boolean!
+}
+
+type Member {
+  id: ID!
+  slackId: String!
+  name: String!
+  picture: String!
+
+  kudosSent: [Kudo!]!
+  kudosReceived: [Kudo!]!
+}
+
+type Kudo {
+  id: ID!
+  sentBy: Member!
+  receivedBy: Member!
+  message: String
 }

@@ -1,7 +1,7 @@
 # source: http://localhost:4466
-# timestamp: Sat Oct 20 2018 13:07:13 GMT+0200 (Central European Summer Time)
+# timestamp: Sat Oct 20 2018 13:24:55 GMT+0200 (Central European Summer Time)
 
-type AggregateChannel {
+type AggregateConversation {
   count: Int!
 }
 
@@ -22,74 +22,78 @@ type BatchPayload {
   count: Long!
 }
 
-type Channel implements Node {
+type Conversation implements Node {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
   slackId: String!
   workspace(where: WorkspaceWhereInput): Workspace!
   members(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
+  type: ConversationType!
   organiseCompetition: Boolean!
   sendEngagementMessages: Boolean!
 }
 
 """A connection to a list of items."""
-type ChannelConnection {
+type ConversationConnection {
   """Information to aid in pagination."""
   pageInfo: PageInfo!
 
   """A list of edges."""
-  edges: [ChannelEdge]!
-  aggregate: AggregateChannel!
+  edges: [ConversationEdge]!
+  aggregate: AggregateConversation!
 }
 
-input ChannelCreateInput {
+input ConversationCreateInput {
   slackId: String!
+  type: ConversationType!
   organiseCompetition: Boolean
   sendEngagementMessages: Boolean
-  workspace: WorkspaceCreateOneWithoutChannelsInput!
-  members: MemberCreateManyWithoutChannelsInput
+  workspace: WorkspaceCreateOneWithoutConversationsInput!
+  members: MemberCreateManyWithoutConversationsInput
 }
 
-input ChannelCreateManyWithoutMembersInput {
-  create: [ChannelCreateWithoutMembersInput!]
-  connect: [ChannelWhereUniqueInput!]
+input ConversationCreateManyWithoutMembersInput {
+  create: [ConversationCreateWithoutMembersInput!]
+  connect: [ConversationWhereUniqueInput!]
 }
 
-input ChannelCreateManyWithoutWorkspaceInput {
-  create: [ChannelCreateWithoutWorkspaceInput!]
-  connect: [ChannelWhereUniqueInput!]
+input ConversationCreateManyWithoutWorkspaceInput {
+  create: [ConversationCreateWithoutWorkspaceInput!]
+  connect: [ConversationWhereUniqueInput!]
 }
 
-input ChannelCreateOneInput {
-  create: ChannelCreateInput
-  connect: ChannelWhereUniqueInput
+input ConversationCreateOneInput {
+  create: ConversationCreateInput
+  connect: ConversationWhereUniqueInput
 }
 
-input ChannelCreateWithoutMembersInput {
+input ConversationCreateWithoutMembersInput {
   slackId: String!
+  type: ConversationType!
   organiseCompetition: Boolean
   sendEngagementMessages: Boolean
-  workspace: WorkspaceCreateOneWithoutChannelsInput!
+  workspace: WorkspaceCreateOneWithoutConversationsInput!
 }
 
-input ChannelCreateWithoutWorkspaceInput {
+input ConversationCreateWithoutWorkspaceInput {
   slackId: String!
+  type: ConversationType!
   organiseCompetition: Boolean
   sendEngagementMessages: Boolean
-  members: MemberCreateManyWithoutChannelsInput
+  members: MemberCreateManyWithoutConversationsInput
 }
 
 """An edge in a connection."""
-type ChannelEdge {
+type ConversationEdge {
   """The item at the end of the edge."""
-  node: Channel!
+  node: Conversation!
 
   """A cursor for use in pagination."""
   cursor: String!
 }
 
-enum ChannelOrderByInput {
+enum ConversationOrderByInput {
   id_ASC
   id_DESC
   createdAt_ASC
@@ -98,37 +102,40 @@ enum ChannelOrderByInput {
   updatedAt_DESC
   slackId_ASC
   slackId_DESC
+  type_ASC
+  type_DESC
   organiseCompetition_ASC
   organiseCompetition_DESC
   sendEngagementMessages_ASC
   sendEngagementMessages_DESC
 }
 
-type ChannelPreviousValues {
+type ConversationPreviousValues {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
   slackId: String!
+  type: ConversationType!
   organiseCompetition: Boolean!
   sendEngagementMessages: Boolean!
 }
 
-type ChannelSubscriptionPayload {
+type ConversationSubscriptionPayload {
   mutation: MutationType!
-  node: Channel
+  node: Conversation
   updatedFields: [String!]
-  previousValues: ChannelPreviousValues
+  previousValues: ConversationPreviousValues
 }
 
-input ChannelSubscriptionWhereInput {
+input ConversationSubscriptionWhereInput {
   """Logical AND on all given filters."""
-  AND: [ChannelSubscriptionWhereInput!]
+  AND: [ConversationSubscriptionWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [ChannelSubscriptionWhereInput!]
+  OR: [ConversationSubscriptionWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [ChannelSubscriptionWhereInput!]
+  NOT: [ConversationSubscriptionWhereInput!]
 
   """
   The subscription event gets dispatched when it's listed in mutation_in
@@ -149,100 +156,110 @@ input ChannelSubscriptionWhereInput {
   The subscription event gets only dispatched when some of the field names included in this list have been updated
   """
   updatedFields_contains_some: [String!]
-  node: ChannelWhereInput
+  node: ConversationWhereInput
 }
 
-input ChannelUpdateDataInput {
+enum ConversationType {
+  DIRECT_MESSAGE
+  GROUP
+  CHANNEL
+}
+
+input ConversationUpdateDataInput {
   slackId: String
+  type: ConversationType
   organiseCompetition: Boolean
   sendEngagementMessages: Boolean
-  workspace: WorkspaceUpdateOneRequiredWithoutChannelsInput
-  members: MemberUpdateManyWithoutChannelsInput
+  workspace: WorkspaceUpdateOneRequiredWithoutConversationsInput
+  members: MemberUpdateManyWithoutConversationsInput
 }
 
-input ChannelUpdateInput {
+input ConversationUpdateInput {
   slackId: String
+  type: ConversationType
   organiseCompetition: Boolean
   sendEngagementMessages: Boolean
-  workspace: WorkspaceUpdateOneRequiredWithoutChannelsInput
-  members: MemberUpdateManyWithoutChannelsInput
+  workspace: WorkspaceUpdateOneRequiredWithoutConversationsInput
+  members: MemberUpdateManyWithoutConversationsInput
 }
 
-input ChannelUpdateManyWithoutMembersInput {
-  create: [ChannelCreateWithoutMembersInput!]
-  connect: [ChannelWhereUniqueInput!]
-  disconnect: [ChannelWhereUniqueInput!]
-  delete: [ChannelWhereUniqueInput!]
-  update: [ChannelUpdateWithWhereUniqueWithoutMembersInput!]
-  upsert: [ChannelUpsertWithWhereUniqueWithoutMembersInput!]
+input ConversationUpdateManyWithoutMembersInput {
+  create: [ConversationCreateWithoutMembersInput!]
+  connect: [ConversationWhereUniqueInput!]
+  disconnect: [ConversationWhereUniqueInput!]
+  delete: [ConversationWhereUniqueInput!]
+  update: [ConversationUpdateWithWhereUniqueWithoutMembersInput!]
+  upsert: [ConversationUpsertWithWhereUniqueWithoutMembersInput!]
 }
 
-input ChannelUpdateManyWithoutWorkspaceInput {
-  create: [ChannelCreateWithoutWorkspaceInput!]
-  connect: [ChannelWhereUniqueInput!]
-  disconnect: [ChannelWhereUniqueInput!]
-  delete: [ChannelWhereUniqueInput!]
-  update: [ChannelUpdateWithWhereUniqueWithoutWorkspaceInput!]
-  upsert: [ChannelUpsertWithWhereUniqueWithoutWorkspaceInput!]
+input ConversationUpdateManyWithoutWorkspaceInput {
+  create: [ConversationCreateWithoutWorkspaceInput!]
+  connect: [ConversationWhereUniqueInput!]
+  disconnect: [ConversationWhereUniqueInput!]
+  delete: [ConversationWhereUniqueInput!]
+  update: [ConversationUpdateWithWhereUniqueWithoutWorkspaceInput!]
+  upsert: [ConversationUpsertWithWhereUniqueWithoutWorkspaceInput!]
 }
 
-input ChannelUpdateOneRequiredInput {
-  create: ChannelCreateInput
-  connect: ChannelWhereUniqueInput
-  update: ChannelUpdateDataInput
-  upsert: ChannelUpsertNestedInput
+input ConversationUpdateOneRequiredInput {
+  create: ConversationCreateInput
+  connect: ConversationWhereUniqueInput
+  update: ConversationUpdateDataInput
+  upsert: ConversationUpsertNestedInput
 }
 
-input ChannelUpdateWithoutMembersDataInput {
+input ConversationUpdateWithoutMembersDataInput {
   slackId: String
+  type: ConversationType
   organiseCompetition: Boolean
   sendEngagementMessages: Boolean
-  workspace: WorkspaceUpdateOneRequiredWithoutChannelsInput
+  workspace: WorkspaceUpdateOneRequiredWithoutConversationsInput
 }
 
-input ChannelUpdateWithoutWorkspaceDataInput {
+input ConversationUpdateWithoutWorkspaceDataInput {
   slackId: String
+  type: ConversationType
   organiseCompetition: Boolean
   sendEngagementMessages: Boolean
-  members: MemberUpdateManyWithoutChannelsInput
+  members: MemberUpdateManyWithoutConversationsInput
 }
 
-input ChannelUpdateWithWhereUniqueWithoutMembersInput {
-  where: ChannelWhereUniqueInput!
-  data: ChannelUpdateWithoutMembersDataInput!
+input ConversationUpdateWithWhereUniqueWithoutMembersInput {
+  where: ConversationWhereUniqueInput!
+  data: ConversationUpdateWithoutMembersDataInput!
 }
 
-input ChannelUpdateWithWhereUniqueWithoutWorkspaceInput {
-  where: ChannelWhereUniqueInput!
-  data: ChannelUpdateWithoutWorkspaceDataInput!
+input ConversationUpdateWithWhereUniqueWithoutWorkspaceInput {
+  where: ConversationWhereUniqueInput!
+  data: ConversationUpdateWithoutWorkspaceDataInput!
 }
 
-input ChannelUpsertNestedInput {
-  update: ChannelUpdateDataInput!
-  create: ChannelCreateInput!
+input ConversationUpsertNestedInput {
+  update: ConversationUpdateDataInput!
+  create: ConversationCreateInput!
 }
 
-input ChannelUpsertWithWhereUniqueWithoutMembersInput {
-  where: ChannelWhereUniqueInput!
-  update: ChannelUpdateWithoutMembersDataInput!
-  create: ChannelCreateWithoutMembersInput!
+input ConversationUpsertWithWhereUniqueWithoutMembersInput {
+  where: ConversationWhereUniqueInput!
+  update: ConversationUpdateWithoutMembersDataInput!
+  create: ConversationCreateWithoutMembersInput!
 }
 
-input ChannelUpsertWithWhereUniqueWithoutWorkspaceInput {
-  where: ChannelWhereUniqueInput!
-  update: ChannelUpdateWithoutWorkspaceDataInput!
-  create: ChannelCreateWithoutWorkspaceInput!
+input ConversationUpsertWithWhereUniqueWithoutWorkspaceInput {
+  where: ConversationWhereUniqueInput!
+  update: ConversationUpdateWithoutWorkspaceDataInput!
+  create: ConversationCreateWithoutWorkspaceInput!
 }
 
-input ChannelWhereInput {
+input ConversationWhereInput {
   """Logical AND on all given filters."""
-  AND: [ChannelWhereInput!]
+  AND: [ConversationWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [ChannelWhereInput!]
+  OR: [ConversationWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [ChannelWhereInput!]
+  NOT: [ConversationWhereInput!]
   id: ID
 
   """All values that are not equal to given value."""
@@ -367,6 +384,16 @@ input ChannelWhereInput {
 
   """All values not ending with the given string."""
   slackId_not_ends_with: String
+  type: ConversationType
+
+  """All values that are not equal to given value."""
+  type_not: ConversationType
+
+  """All values that are contained in given list."""
+  type_in: [ConversationType!]
+
+  """All values that are not contained in given list."""
+  type_not_in: [ConversationType!]
   organiseCompetition: Boolean
 
   """All values that are not equal to given value."""
@@ -381,7 +408,7 @@ input ChannelWhereInput {
   members_none: MemberWhereInput
 }
 
-input ChannelWhereUniqueInput {
+input ConversationWhereUniqueInput {
   id: ID
   slackId: String
 }
@@ -397,7 +424,8 @@ type Kudo implements Node {
   updatedAt: DateTime!
   sentBy(where: MemberWhereInput): Member!
   receivedBy(where: MemberWhereInput): Member!
-  sentInChannel(where: ChannelWhereInput): Channel!
+  sentInConversation(where: ConversationWhereInput): Conversation!
+  message: String
   public: Boolean!
 }
 
@@ -412,10 +440,11 @@ type KudoConnection {
 }
 
 input KudoCreateInput {
+  message: String
   public: Boolean!
   sentBy: MemberCreateOneWithoutKudosSentInput!
   receivedBy: MemberCreateOneWithoutKudosReceivedInput!
-  sentInChannel: ChannelCreateOneInput!
+  sentInConversation: ConversationCreateOneInput!
 }
 
 input KudoCreateManyWithoutReceivedByInput {
@@ -429,15 +458,17 @@ input KudoCreateManyWithoutSentByInput {
 }
 
 input KudoCreateWithoutReceivedByInput {
+  message: String
   public: Boolean!
   sentBy: MemberCreateOneWithoutKudosSentInput!
-  sentInChannel: ChannelCreateOneInput!
+  sentInConversation: ConversationCreateOneInput!
 }
 
 input KudoCreateWithoutSentByInput {
+  message: String
   public: Boolean!
   receivedBy: MemberCreateOneWithoutKudosReceivedInput!
-  sentInChannel: ChannelCreateOneInput!
+  sentInConversation: ConversationCreateOneInput!
 }
 
 """An edge in a connection."""
@@ -456,6 +487,8 @@ enum KudoOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
+  message_ASC
+  message_DESC
   public_ASC
   public_DESC
 }
@@ -464,6 +497,7 @@ type KudoPreviousValues {
   id: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
+  message: String
   public: Boolean!
 }
 
@@ -507,10 +541,11 @@ input KudoSubscriptionWhereInput {
 }
 
 input KudoUpdateInput {
+  message: String
   public: Boolean
   sentBy: MemberUpdateOneRequiredWithoutKudosSentInput
   receivedBy: MemberUpdateOneRequiredWithoutKudosReceivedInput
-  sentInChannel: ChannelUpdateOneRequiredInput
+  sentInConversation: ConversationUpdateOneRequiredInput
 }
 
 input KudoUpdateManyWithoutReceivedByInput {
@@ -532,15 +567,17 @@ input KudoUpdateManyWithoutSentByInput {
 }
 
 input KudoUpdateWithoutReceivedByDataInput {
+  message: String
   public: Boolean
   sentBy: MemberUpdateOneRequiredWithoutKudosSentInput
-  sentInChannel: ChannelUpdateOneRequiredInput
+  sentInConversation: ConversationUpdateOneRequiredInput
 }
 
 input KudoUpdateWithoutSentByDataInput {
+  message: String
   public: Boolean
   receivedBy: MemberUpdateOneRequiredWithoutKudosReceivedInput
-  sentInChannel: ChannelUpdateOneRequiredInput
+  sentInConversation: ConversationUpdateOneRequiredInput
 }
 
 input KudoUpdateWithWhereUniqueWithoutReceivedByInput {
@@ -658,13 +695,53 @@ input KudoWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
+  message: String
+
+  """All values that are not equal to given value."""
+  message_not: String
+
+  """All values that are contained in given list."""
+  message_in: [String!]
+
+  """All values that are not contained in given list."""
+  message_not_in: [String!]
+
+  """All values less than the given value."""
+  message_lt: String
+
+  """All values less than or equal the given value."""
+  message_lte: String
+
+  """All values greater than the given value."""
+  message_gt: String
+
+  """All values greater than or equal the given value."""
+  message_gte: String
+
+  """All values containing the given string."""
+  message_contains: String
+
+  """All values not containing the given string."""
+  message_not_contains: String
+
+  """All values starting with the given string."""
+  message_starts_with: String
+
+  """All values not starting with the given string."""
+  message_not_starts_with: String
+
+  """All values ending with the given string."""
+  message_ends_with: String
+
+  """All values not ending with the given string."""
+  message_not_ends_with: String
   public: Boolean
 
   """All values that are not equal to given value."""
   public_not: Boolean
   sentBy: MemberWhereInput
   receivedBy: MemberWhereInput
-  sentInChannel: ChannelWhereInput
+  sentInConversation: ConversationWhereInput
 }
 
 input KudoWhereUniqueInput {
@@ -682,7 +759,7 @@ type Member implements Node {
   createdAt: DateTime!
   updatedAt: DateTime!
   slackId: String!
-  channels(where: ChannelWhereInput, orderBy: ChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Channel!]
+  Conversations(where: ConversationWhereInput, orderBy: ConversationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Conversation!]
   workspace(where: WorkspaceWhereInput): Workspace!
   kudosSent(where: KudoWhereInput, orderBy: KudoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Kudo!]
   kudosReceived(where: KudoWhereInput, orderBy: KudoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Kudo!]
@@ -702,14 +779,14 @@ type MemberConnection {
 input MemberCreateInput {
   slackId: String!
   receiveNotifications: Boolean
-  channels: ChannelCreateManyWithoutMembersInput
+  Conversations: ConversationCreateManyWithoutMembersInput
   workspace: WorkspaceCreateOneWithoutMembersInput!
   kudosSent: KudoCreateManyWithoutSentByInput
   kudosReceived: KudoCreateManyWithoutReceivedByInput
 }
 
-input MemberCreateManyWithoutChannelsInput {
-  create: [MemberCreateWithoutChannelsInput!]
+input MemberCreateManyWithoutConversationsInput {
+  create: [MemberCreateWithoutConversationsInput!]
   connect: [MemberWhereUniqueInput!]
 }
 
@@ -728,7 +805,7 @@ input MemberCreateOneWithoutKudosSentInput {
   connect: MemberWhereUniqueInput
 }
 
-input MemberCreateWithoutChannelsInput {
+input MemberCreateWithoutConversationsInput {
   slackId: String!
   receiveNotifications: Boolean
   workspace: WorkspaceCreateOneWithoutMembersInput!
@@ -739,7 +816,7 @@ input MemberCreateWithoutChannelsInput {
 input MemberCreateWithoutKudosReceivedInput {
   slackId: String!
   receiveNotifications: Boolean
-  channels: ChannelCreateManyWithoutMembersInput
+  Conversations: ConversationCreateManyWithoutMembersInput
   workspace: WorkspaceCreateOneWithoutMembersInput!
   kudosSent: KudoCreateManyWithoutSentByInput
 }
@@ -747,7 +824,7 @@ input MemberCreateWithoutKudosReceivedInput {
 input MemberCreateWithoutKudosSentInput {
   slackId: String!
   receiveNotifications: Boolean
-  channels: ChannelCreateManyWithoutMembersInput
+  Conversations: ConversationCreateManyWithoutMembersInput
   workspace: WorkspaceCreateOneWithoutMembersInput!
   kudosReceived: KudoCreateManyWithoutReceivedByInput
 }
@@ -755,7 +832,7 @@ input MemberCreateWithoutKudosSentInput {
 input MemberCreateWithoutWorkspaceInput {
   slackId: String!
   receiveNotifications: Boolean
-  channels: ChannelCreateManyWithoutMembersInput
+  Conversations: ConversationCreateManyWithoutMembersInput
   kudosSent: KudoCreateManyWithoutSentByInput
   kudosReceived: KudoCreateManyWithoutReceivedByInput
 }
@@ -832,19 +909,19 @@ input MemberSubscriptionWhereInput {
 input MemberUpdateInput {
   slackId: String
   receiveNotifications: Boolean
-  channels: ChannelUpdateManyWithoutMembersInput
+  Conversations: ConversationUpdateManyWithoutMembersInput
   workspace: WorkspaceUpdateOneRequiredWithoutMembersInput
   kudosSent: KudoUpdateManyWithoutSentByInput
   kudosReceived: KudoUpdateManyWithoutReceivedByInput
 }
 
-input MemberUpdateManyWithoutChannelsInput {
-  create: [MemberCreateWithoutChannelsInput!]
+input MemberUpdateManyWithoutConversationsInput {
+  create: [MemberCreateWithoutConversationsInput!]
   connect: [MemberWhereUniqueInput!]
   disconnect: [MemberWhereUniqueInput!]
   delete: [MemberWhereUniqueInput!]
-  update: [MemberUpdateWithWhereUniqueWithoutChannelsInput!]
-  upsert: [MemberUpsertWithWhereUniqueWithoutChannelsInput!]
+  update: [MemberUpdateWithWhereUniqueWithoutConversationsInput!]
+  upsert: [MemberUpsertWithWhereUniqueWithoutConversationsInput!]
 }
 
 input MemberUpdateManyWithoutWorkspaceInput {
@@ -870,7 +947,7 @@ input MemberUpdateOneRequiredWithoutKudosSentInput {
   upsert: MemberUpsertWithoutKudosSentInput
 }
 
-input MemberUpdateWithoutChannelsDataInput {
+input MemberUpdateWithoutConversationsDataInput {
   slackId: String
   receiveNotifications: Boolean
   workspace: WorkspaceUpdateOneRequiredWithoutMembersInput
@@ -881,7 +958,7 @@ input MemberUpdateWithoutChannelsDataInput {
 input MemberUpdateWithoutKudosReceivedDataInput {
   slackId: String
   receiveNotifications: Boolean
-  channels: ChannelUpdateManyWithoutMembersInput
+  Conversations: ConversationUpdateManyWithoutMembersInput
   workspace: WorkspaceUpdateOneRequiredWithoutMembersInput
   kudosSent: KudoUpdateManyWithoutSentByInput
 }
@@ -889,7 +966,7 @@ input MemberUpdateWithoutKudosReceivedDataInput {
 input MemberUpdateWithoutKudosSentDataInput {
   slackId: String
   receiveNotifications: Boolean
-  channels: ChannelUpdateManyWithoutMembersInput
+  Conversations: ConversationUpdateManyWithoutMembersInput
   workspace: WorkspaceUpdateOneRequiredWithoutMembersInput
   kudosReceived: KudoUpdateManyWithoutReceivedByInput
 }
@@ -897,14 +974,14 @@ input MemberUpdateWithoutKudosSentDataInput {
 input MemberUpdateWithoutWorkspaceDataInput {
   slackId: String
   receiveNotifications: Boolean
-  channels: ChannelUpdateManyWithoutMembersInput
+  Conversations: ConversationUpdateManyWithoutMembersInput
   kudosSent: KudoUpdateManyWithoutSentByInput
   kudosReceived: KudoUpdateManyWithoutReceivedByInput
 }
 
-input MemberUpdateWithWhereUniqueWithoutChannelsInput {
+input MemberUpdateWithWhereUniqueWithoutConversationsInput {
   where: MemberWhereUniqueInput!
-  data: MemberUpdateWithoutChannelsDataInput!
+  data: MemberUpdateWithoutConversationsDataInput!
 }
 
 input MemberUpdateWithWhereUniqueWithoutWorkspaceInput {
@@ -922,10 +999,10 @@ input MemberUpsertWithoutKudosSentInput {
   create: MemberCreateWithoutKudosSentInput!
 }
 
-input MemberUpsertWithWhereUniqueWithoutChannelsInput {
+input MemberUpsertWithWhereUniqueWithoutConversationsInput {
   where: MemberWhereUniqueInput!
-  update: MemberUpdateWithoutChannelsDataInput!
-  create: MemberCreateWithoutChannelsInput!
+  update: MemberUpdateWithoutConversationsDataInput!
+  create: MemberCreateWithoutConversationsInput!
 }
 
 input MemberUpsertWithWhereUniqueWithoutWorkspaceInput {
@@ -1071,9 +1148,9 @@ input MemberWhereInput {
 
   """All values that are not equal to given value."""
   receiveNotifications_not: Boolean
-  channels_every: ChannelWhereInput
-  channels_some: ChannelWhereInput
-  channels_none: ChannelWhereInput
+  Conversations_every: ConversationWhereInput
+  Conversations_some: ConversationWhereInput
+  Conversations_none: ConversationWhereInput
   workspace: WorkspaceWhereInput
   kudosSent_every: KudoWhereInput
   kudosSent_some: KudoWhereInput
@@ -1092,27 +1169,27 @@ type Mutation {
   createWorkspace(data: WorkspaceCreateInput!): Workspace!
   createMember(data: MemberCreateInput!): Member!
   createKudo(data: KudoCreateInput!): Kudo!
-  createChannel(data: ChannelCreateInput!): Channel!
+  createConversation(data: ConversationCreateInput!): Conversation!
   updateWorkspace(data: WorkspaceUpdateInput!, where: WorkspaceWhereUniqueInput!): Workspace
   updateMember(data: MemberUpdateInput!, where: MemberWhereUniqueInput!): Member
   updateKudo(data: KudoUpdateInput!, where: KudoWhereUniqueInput!): Kudo
-  updateChannel(data: ChannelUpdateInput!, where: ChannelWhereUniqueInput!): Channel
+  updateConversation(data: ConversationUpdateInput!, where: ConversationWhereUniqueInput!): Conversation
   deleteWorkspace(where: WorkspaceWhereUniqueInput!): Workspace
   deleteMember(where: MemberWhereUniqueInput!): Member
   deleteKudo(where: KudoWhereUniqueInput!): Kudo
-  deleteChannel(where: ChannelWhereUniqueInput!): Channel
+  deleteConversation(where: ConversationWhereUniqueInput!): Conversation
   upsertWorkspace(where: WorkspaceWhereUniqueInput!, create: WorkspaceCreateInput!, update: WorkspaceUpdateInput!): Workspace!
   upsertMember(where: MemberWhereUniqueInput!, create: MemberCreateInput!, update: MemberUpdateInput!): Member!
   upsertKudo(where: KudoWhereUniqueInput!, create: KudoCreateInput!, update: KudoUpdateInput!): Kudo!
-  upsertChannel(where: ChannelWhereUniqueInput!, create: ChannelCreateInput!, update: ChannelUpdateInput!): Channel!
+  upsertConversation(where: ConversationWhereUniqueInput!, create: ConversationCreateInput!, update: ConversationUpdateInput!): Conversation!
   updateManyWorkspaces(data: WorkspaceUpdateInput!, where: WorkspaceWhereInput): BatchPayload!
   updateManyMembers(data: MemberUpdateInput!, where: MemberWhereInput): BatchPayload!
   updateManyKudoes(data: KudoUpdateInput!, where: KudoWhereInput): BatchPayload!
-  updateManyChannels(data: ChannelUpdateInput!, where: ChannelWhereInput): BatchPayload!
+  updateManyConversations(data: ConversationUpdateInput!, where: ConversationWhereInput): BatchPayload!
   deleteManyWorkspaces(where: WorkspaceWhereInput): BatchPayload!
   deleteManyMembers(where: MemberWhereInput): BatchPayload!
   deleteManyKudoes(where: KudoWhereInput): BatchPayload!
-  deleteManyChannels(where: ChannelWhereInput): BatchPayload!
+  deleteManyConversations(where: ConversationWhereInput): BatchPayload!
   executeRaw(database: PrismaDatabase, query: String!): Json!
 }
 
@@ -1151,15 +1228,15 @@ type Query {
   workspaces(where: WorkspaceWhereInput, orderBy: WorkspaceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Workspace]!
   members(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member]!
   kudoes(where: KudoWhereInput, orderBy: KudoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Kudo]!
-  channels(where: ChannelWhereInput, orderBy: ChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Channel]!
+  conversations(where: ConversationWhereInput, orderBy: ConversationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Conversation]!
   workspace(where: WorkspaceWhereUniqueInput!): Workspace
   member(where: MemberWhereUniqueInput!): Member
   kudo(where: KudoWhereUniqueInput!): Kudo
-  channel(where: ChannelWhereUniqueInput!): Channel
+  conversation(where: ConversationWhereUniqueInput!): Conversation
   workspacesConnection(where: WorkspaceWhereInput, orderBy: WorkspaceOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): WorkspaceConnection!
   membersConnection(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MemberConnection!
   kudoesConnection(where: KudoWhereInput, orderBy: KudoOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): KudoConnection!
-  channelsConnection(where: ChannelWhereInput, orderBy: ChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ChannelConnection!
+  conversationsConnection(where: ConversationWhereInput, orderBy: ConversationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ConversationConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -1172,7 +1249,7 @@ type Subscription {
   workspace(where: WorkspaceSubscriptionWhereInput): WorkspaceSubscriptionPayload
   member(where: MemberSubscriptionWhereInput): MemberSubscriptionPayload
   kudo(where: KudoSubscriptionWhereInput): KudoSubscriptionPayload
-  channel(where: ChannelSubscriptionWhereInput): ChannelSubscriptionPayload
+  conversation(where: ConversationSubscriptionWhereInput): ConversationSubscriptionPayload
 }
 
 type Workspace implements Node {
@@ -1181,7 +1258,7 @@ type Workspace implements Node {
   updatedAt: DateTime!
   slackId: String!
   members(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
-  channels(where: ChannelWhereInput, orderBy: ChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Channel!]
+  Conversations(where: ConversationWhereInput, orderBy: ConversationOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Conversation!]
 }
 
 """A connection to a list of items."""
@@ -1197,11 +1274,11 @@ type WorkspaceConnection {
 input WorkspaceCreateInput {
   slackId: String!
   members: MemberCreateManyWithoutWorkspaceInput
-  channels: ChannelCreateManyWithoutWorkspaceInput
+  Conversations: ConversationCreateManyWithoutWorkspaceInput
 }
 
-input WorkspaceCreateOneWithoutChannelsInput {
-  create: WorkspaceCreateWithoutChannelsInput
+input WorkspaceCreateOneWithoutConversationsInput {
+  create: WorkspaceCreateWithoutConversationsInput
   connect: WorkspaceWhereUniqueInput
 }
 
@@ -1210,14 +1287,14 @@ input WorkspaceCreateOneWithoutMembersInput {
   connect: WorkspaceWhereUniqueInput
 }
 
-input WorkspaceCreateWithoutChannelsInput {
+input WorkspaceCreateWithoutConversationsInput {
   slackId: String!
   members: MemberCreateManyWithoutWorkspaceInput
 }
 
 input WorkspaceCreateWithoutMembersInput {
   slackId: String!
-  channels: ChannelCreateManyWithoutWorkspaceInput
+  Conversations: ConversationCreateManyWithoutWorkspaceInput
 }
 
 """An edge in a connection."""
@@ -1289,14 +1366,14 @@ input WorkspaceSubscriptionWhereInput {
 input WorkspaceUpdateInput {
   slackId: String
   members: MemberUpdateManyWithoutWorkspaceInput
-  channels: ChannelUpdateManyWithoutWorkspaceInput
+  Conversations: ConversationUpdateManyWithoutWorkspaceInput
 }
 
-input WorkspaceUpdateOneRequiredWithoutChannelsInput {
-  create: WorkspaceCreateWithoutChannelsInput
+input WorkspaceUpdateOneRequiredWithoutConversationsInput {
+  create: WorkspaceCreateWithoutConversationsInput
   connect: WorkspaceWhereUniqueInput
-  update: WorkspaceUpdateWithoutChannelsDataInput
-  upsert: WorkspaceUpsertWithoutChannelsInput
+  update: WorkspaceUpdateWithoutConversationsDataInput
+  upsert: WorkspaceUpsertWithoutConversationsInput
 }
 
 input WorkspaceUpdateOneRequiredWithoutMembersInput {
@@ -1306,19 +1383,19 @@ input WorkspaceUpdateOneRequiredWithoutMembersInput {
   upsert: WorkspaceUpsertWithoutMembersInput
 }
 
-input WorkspaceUpdateWithoutChannelsDataInput {
+input WorkspaceUpdateWithoutConversationsDataInput {
   slackId: String
   members: MemberUpdateManyWithoutWorkspaceInput
 }
 
 input WorkspaceUpdateWithoutMembersDataInput {
   slackId: String
-  channels: ChannelUpdateManyWithoutWorkspaceInput
+  Conversations: ConversationUpdateManyWithoutWorkspaceInput
 }
 
-input WorkspaceUpsertWithoutChannelsInput {
-  update: WorkspaceUpdateWithoutChannelsDataInput!
-  create: WorkspaceCreateWithoutChannelsInput!
+input WorkspaceUpsertWithoutConversationsInput {
+  update: WorkspaceUpdateWithoutConversationsDataInput!
+  create: WorkspaceCreateWithoutConversationsInput!
 }
 
 input WorkspaceUpsertWithoutMembersInput {
@@ -1462,9 +1539,9 @@ input WorkspaceWhereInput {
   members_every: MemberWhereInput
   members_some: MemberWhereInput
   members_none: MemberWhereInput
-  channels_every: ChannelWhereInput
-  channels_some: ChannelWhereInput
-  channels_none: ChannelWhereInput
+  Conversations_every: ConversationWhereInput
+  Conversations_some: ConversationWhereInput
+  Conversations_none: ConversationWhereInput
 }
 
 input WorkspaceWhereUniqueInput {

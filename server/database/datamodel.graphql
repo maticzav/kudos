@@ -5,22 +5,31 @@ type Workspace {
 
   slackId: String! @unique
   members: [Member!]! @relation(name: "WorkspaceMember", onDelete: CASCADE)
-  channels: [Channel!]! @relation(name: "WorkspaceChannel", onDelete: CASCADE)
+  Conversations: [Conversation!]!
+    @relation(name: "WorkspaceConversation", onDelete: CASCADE)
 }
 
-type Channel {
+type Conversation {
   id: ID! @unique
   createdAt: DateTime!
   updatedAt: DateTime!
 
   # Meta
   slackId: String! @unique
-  workspace: Workspace! @relation(name: "WorkspaceChannel", onDelete: SET_NULL)
-  members: [Member!]! @relation(name: "ChannelMember", onDelete: SET_NULL)
+  workspace: Workspace!
+    @relation(name: "WorkspaceConversation", onDelete: SET_NULL)
+  members: [Member!]! @relation(name: "ConversationMember", onDelete: SET_NULL)
+  type: ConversationType!
 
   # Settings
   organiseCompetition: Boolean! @default(value: "false")
   sendEngagementMessages: Boolean! @default(value: "false")
+}
+
+enum ConversationType {
+  DIRECT_MESSAGE
+  GROUP
+  CHANNEL
 }
 
 type Member {
@@ -30,7 +39,8 @@ type Member {
 
   # Meta
   slackId: String! @unique
-  channels: [Channel!]! @relation(name: "ChannelMember", onDelete: SET_NULL)
+  Conversations: [Conversation!]!
+    @relation(name: "ConversationMember", onDelete: SET_NULL)
   workspace: Workspace! @relation(name: "WorkspaceMember", onDelete: SET_NULL)
 
   kudosSent: [Kudo!]! @relation(name: "KudoSender", onDelete: CASCADE)
@@ -48,8 +58,10 @@ type Kudo {
   # Meta
   sentBy: Member! @relation(name: "KudoSender", onDelete: SET_NULL)
   receivedBy: Member! @relation(name: "KudoReceiver", onDelete: SET_NULL)
-  sentInChannel: Channel! @relation(name: "KudoInChannel", onDelete: SET_NULL)
+  sentInConversation: Conversation!
+    @relation(name: "KudoInConversation", onDelete: SET_NULL)
 
+  message: String
   # response: KudoResponse @relation(name: "KudoResponse", onDelete: CASCADE)
 
   # Settings
