@@ -26,6 +26,8 @@
     "apollo-client": "^2.4.2",
     "apollo-link-http": "^1.5.5",
     "graphql": "^14.0.2",
+    "graphql-tag": "^2.10.0",
+    "isomorphic-fetch": "^2.2.1",
     "ontime": "^0.0.6"
   }
 }

@@ -45,36 +45,13 @@ export class Slack {
     }).then(res => res.json())
   }
 
-  async getUser(slackId: string): Promise<SlackUser> {
+  async postToChannel(slackId: string, text: string): Promise<SlackUser> {
     const body = new URLSearchParams()
 
-    body.append('user', slackId)
     body.append('token', this.apiToken)
-
-    return this.executeMethod<any>('users.profile.get', body).then(
-      res => res.profile,
-    )
-  }
-
-  async getConversationInfo(slackId: string): Promise<SlackConversation> {
-    const body = new URLSearchParams()
-
     body.append('channel', slackId)
-    body.append('token', this.apiToken)
+    body.append('text', text)
 
-    return this.executeMethod<any>('conversations.info', body).then(
-      res => res.channel,
-    )
-  }
-
-  async getConversationMembers(slackId: string): Promise<Array<string>> {
-    const body = new URLSearchParams()
-
-    body.append('channel', slackId)
-    body.append('token', this.apiToken)
-
-    return this.executeMethod<any>('conversations.members', body).then(
-      res => res.members,
-    )
+    return this.executeMethod<any>('chat.postMessage', body).then(res => res)
   }
 }
