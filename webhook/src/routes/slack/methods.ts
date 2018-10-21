@@ -44,6 +44,10 @@ Try the following commands:
         },
       )
 
+      const slackRes = await req.slack.sendMessage(recipientSlackId, {
+        text: `<@${senderSlackId}> just sent you Kudos!`,
+      })
+
       return {
         text: `You sent kudos to <@${recipientSlackId}>!`,
         attachments: [
