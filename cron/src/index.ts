@@ -97,3 +97,5 @@ These are the top givers for the last ${timePeriod}: ⛑\n
 \n
 💩 Everybody else
         `
+
+console.log("CHROMEN'")
