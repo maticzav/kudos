@@ -95,17 +95,20 @@ Try the following commands:
         },
       )
 
+      const topReceivers = res.channelLeaderboard.topReceivers
+      const topSenders = res.channelLeaderboard.topSenders
+
       return {
         text: `
 These is the top receivers: 🏆\n
-    🥇 <@${res.channelLeaderboard.topReceivers[0].slackId}>\n
-    🥈 <@${res.channelLeaderboard.topReceivers[1].slackId}>\n
-    🥉 <@${res.channelLeaderboard.topReceivers[2].slackId}>\n
+    ${topReceivers[0] && `🥇 <@${topReceivers[0].slackId}>\n`}
+    ${topReceivers[1] && `🥈 <@${topReceivers[1].slackId}>\n`}
+    ${topReceivers[2] && `🥉 <@${topReceivers[2].slackId}>\n`}
 \n
 These is the top givers: ⛑\n
-    🥇 <@${res.channelLeaderboard.topSenders[0].slackId}>\n
-    🥈 <@${res.channelLeaderboard.topSenders[1].slackId}>\n
-    🥉 <@${res.channelLeaderboard.topSenders[2].slackId}>\n
+    ${topSenders[0] && `🥇 <@${topSenders[0].slackId}>\n`}
+    ${topSenders[1] && `🥈 <@${topSenders[1].slackId}>\n`}
+    ${topSenders[2] && `🥉 <@${topSenders[2].slackId}>\n`}
 \n
 💩 Everybody else
         `,
