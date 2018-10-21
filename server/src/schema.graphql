@@ -5,6 +5,8 @@ type Query {
     slackId: String!
     timePeriod: LeaderboardTimeperiod!
   ): LeaderboardPayload!
+  competingConversations: [Conversation!]!
+  engagedConversations: [Conversation!]!
 }
 
 enum LeaderboardTimeperiod {

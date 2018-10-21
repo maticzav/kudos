@@ -31,8 +31,6 @@ export const LeaderboardPayload = {
   ) {
     const ISODate = timePeriodToDate(timePeriod)
 
-    console.log(ISODate)
-
     const channelUserIds = await ctx.slack.getConversationMembers(channelId)
 
     const numberOfKudosReceivedByUser = await Promise.all(
@@ -58,9 +56,9 @@ export const LeaderboardPayload = {
       }),
     )
 
-    return numberOfKudosReceivedByUser.sort(
-      (user1, user2) => user2.score - user1.score,
-    )
+    return numberOfKudosReceivedByUser
+      .sort((user1, user2) => user2.score - user1.score)
+      .slice(0, 3)
   },
 
   async topSenders(
@@ -96,11 +94,9 @@ export const LeaderboardPayload = {
       }),
     )
 
-    console.log(numberOfKudosSentByUser)
-
-    return numberOfKudosSentByUser.sort(
-      (user1, user2) => user2.score - user1.score,
-    )
+    return numberOfKudosSentByUser
+      .sort((user1, user2) => user2.score - user1.score)
+      .slice(0, 3)
   },
 
   async topScorers(
@@ -136,8 +132,8 @@ export const LeaderboardPayload = {
       }),
     )
 
-    return numberOfKudosReceivedByUser.sort(
-      (user1, user2) => user2.score - user1.score,
-    )
+    return numberOfKudosReceivedByUser
+      .sort((user1, user2) => user2.score - user1.score)
+      .slice(0, 3)
   },
 }
