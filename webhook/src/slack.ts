@@ -39,12 +39,12 @@ export interface SlackAttachment {
   text: string
   callback_id?: string
   color?: string
-  actions?: SlackAction[]
+  actions?: SlackAttachmentAction[]
   image_url?: string
   thumb_url?: string
 }
 
-export interface SlackAction {
+export interface SlackAttachmentAction {
   name: string
   text: string
   type: string
@@ -79,7 +79,7 @@ export interface SlackUser {
 export interface SlackAction {
   type: string
   callback_id: string
-  actions: SlackAction[]
+  actions: SlackAttachmentAction[]
   channel: SlackChannel
   user: SlackUser
   original_message?: SlackMessage

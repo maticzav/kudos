@@ -1,5 +1,45 @@
 version: '3'
 services:
+  server:
+    build: ./server
+    restart: always
+    command: npm run start
+    ports:
+      - '4001:4001'
+    depends_on:
+      - prisma
+    environment:
+      PRISMA_ENDPOINT: 'http://localhost:4466'
+      PRISMA_SECRET: 'mysecret123'
+      SLACK_ORGANIZATION: 'kudos-testing'
+      SLACK_API_TOKEN: 'xoxp-457476785201-460799704149-460040378401-5d81e4bbd839e3e2d90f95efcdbd2b51'
+      PORT: 4001
+  webhook:
+    build: ./webhook
+    restart: always
+    command: npm run start
+    ports:
+      - '3000:3000'
+    depends_on:
+      - server
+    environment:
+      KUDOS_ENDPOINT: 'http://localhost:4001'
+      SLACK_ORGANIZATION: 'kudos-testing'
+      SLACK_API_TOKEN: 'xoxp-457476785201-460799704149-460040378401-5d81e4bbd839e3e2d90f95efcdbd2b51'
+      PORT: 3000
+  cron:
+    build: ./server
+    restart: always
+    command: npm run start
+    ports:
+      - '2000:2000'
+    depends_on:
+      - prisma
+    environment:
+      KUDOS_ENDPOINT: 'http://localhost:4001'
+      SLACK_ORGANIZATION: 'kudos-testing'
+      SLACK_API_TOKEN: 'xoxp-457476785201-460799704149-460040378401-5d81e4bbd839e3e2d90f95efcdbd2b51'
+      PORT: 2000
   prisma:
     image: prismagraphql/prisma:1.17
     restart: always

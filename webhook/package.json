@@ -9,9 +9,9 @@
     "prebuild": "npm run clean",
     "build": "tsc -d",
     "dev": "dotenv -- nodemon -e ts -x ts-node src/index.ts",
-    "prepare": "graphql prepare -p server --bindings",
+    "codegen": "graphql prepare -p server --bindings",
     "get-schema": "graphql get-schema --project server",
-    "generate": "npm run get-schema; npm run prepare"
+    "generate": "npm run get-schema; npm run codegen"
   },
   "dependencies": {
     "@slack/client": "^4.8.0",
