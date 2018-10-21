@@ -100,12 +100,12 @@ Try the following commands:
 
       return {
         text: `
-These is the top receivers: 🏆\n
+These is the top receivers for the last week: 🏆\n
     ${topReceivers[0] && `🥇 <@${topReceivers[0].slackId}>\n`}
     ${topReceivers[1] && `🥈 <@${topReceivers[1].slackId}>\n`}
     ${topReceivers[2] && `🥉 <@${topReceivers[2].slackId}>\n`}
 \n
-These is the top givers: ⛑\n
+These is the top givers for the last week: ⛑\n
     ${topSenders[0] && `🥇 <@${topSenders[0].slackId}>\n`}
     ${topSenders[1] && `🥈 <@${topSenders[1].slackId}>\n`}
     ${topSenders[2] && `🥉 <@${topSenders[2].slackId}>\n`}
