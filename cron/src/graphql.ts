@@ -6,7 +6,7 @@ import gql from 'graphql-tag'
 
 const client = new ApolloClient({
   link: new HttpLink({
-    uri: 'https://0d1f0ef4.ngrok.io',
+    uri: process.env.KUDOS_ENDPOINT,
     fetch,
   }),
   cache: new InMemoryCache(),
@@ -28,9 +28,24 @@ const engagedCompetitions = gql`
   }
 `
 
-const channelLeaderboard = gql`
-  query channelLeaderboard($slackId: String!, $timePeiod: TIME_PERIOD!) {
-    channelLeaderboard(slackId: $slackId, timePeriod: $timePeiod) {
+const channelLeaderboardWeek = gql`
+  query channelLeaderboard($slackId: String!) {
+    channelLeaderboard(slackId: $slackId, timePeriod: LAST_WEEK) {
+      topReceivers {
+        slackId
+        score
+      }
+      topSenders {
+        slackId
+        score
+      }
+    }
+  }
+`
+
+const channelLeaderboardMonth = gql`
+  query channelLeaderboard($slackId: String!) {
+    channelLeaderboard(slackId: $slackId, timePeriod: LAST_MONTH) {
       topReceivers {
         slackId
         score
@@ -59,10 +74,19 @@ export async function getEngagedCompetitions() {
   return res.data.engagedCompetitions
 }
 
-export async function getChannelLeaderboard(slackId, timePeriod) {
+export async function getChannelLeaderboardWeek(slackId) {
   const res: any = await client.query({
-    query: channelLeaderboard,
-    variables: { slackId, timePeriod },
+    query: channelLeaderboardWeek,
+    variables: { slackId },
+  })
+
+  return res.data.channelLeaderboard
+}
+
+export async function getChannelLeaderboardMonth(slackId) {
+  const res: any = await client.query({
+    query: channelLeaderboardMonth,
+    variables: { slackId },
   })
 
   return res.data.channelLeaderboard

@@ -2,7 +2,8 @@ const ontime = require('ontime')
 import {
   getCompetingConversations,
   getEngagedCompetitions,
-  getChannelLeaderboard,
+  getChannelLeaderboardWeek,
+  getChannelLeaderboardMonth,
 } from './graphql'
 import { Slack } from './slack'
 
@@ -18,24 +19,29 @@ ontime(
   async ot => {
     const conversationsToNotify = await getCompetingConversations()
 
-    const leaderboards = conversationsToNotify.map(async conversation => {
-      const leaderboardsResponse = await getChannelLeaderboard(
-        conversation,
-        'LAST_MONTH',
-      )
+    const leaderboards: Promise<any>[] = conversationsToNotify.map(
+      async conversation => {
+        const leaderboardsResponse = await getChannelLeaderboardWeek(
+          conversation.slackId,
+        )
 
-      return {
-        topReceivers: leaderboardsResponse.topReceivers,
-        topSenders: leaderboardsResponse.topSenders,
-        slackId: conversation,
-      }
-    })
+        return {
+          topReceivers: leaderboardsResponse.topReceivers,
+          topSenders: leaderboardsResponse.topSenders,
+          slackId: conversation.slackId,
+        }
+      },
+    )
 
-    Promise.all(
-      leaderboards.forEach(leaderboard =>
+    Promise.all(leaderboards).then(res =>
+      res.forEach(leaderboard =>
         slack.postToChannel(
           leaderboard.slackId,
-          leaderboardRenderer(leaderboard.topReceivers, leaderboard.topS),
+          leaderboardRenderer(
+            leaderboard.topReceivers,
+            leaderboard.topSenders,
+            'week',
+          ),
         ),
       ),
     )
@@ -49,37 +55,42 @@ ontime(
   async ot => {
     const conversationsToNotify = await getEngagedCompetitions()
 
-    const leaderboards = conversationsToNotify.map(async conversation => {
-      const leaderboardsResponse = await getChannelLeaderboard(
-        conversation,
-        'LAST_WEEK',
-      )
+    const leaderboards: Promise<any>[] = conversationsToNotify.map(
+      async conversation => {
+        const leaderboardsResponse = await getChannelLeaderboardMonth(
+          conversation.slackId,
+        )
 
-      return {
-        topReceivers: leaderboardsResponse.topReceivers,
-        topSenders: leaderboardsResponse.topSenders,
-        slackId: conversation,
-      }
-    })
+        return {
+          topReceivers: leaderboardsResponse.topReceivers,
+          topSenders: leaderboardsResponse.topSenders,
+          slackId: conversation.slackId,
+        }
+      },
+    )
 
-    Promise.all(
-      leaderboards.forEach(leaderboard =>
+    Promise.all(leaderboards).then(res =>
+      res.forEach(leaderboard =>
         slack.postToChannel(
           leaderboard.slackId,
-          leaderboardRenderer(leaderboard.topReceivers, leaderboard.topS),
+          leaderboardRenderer(
+            leaderboard.topReceivers,
+            leaderboard.topSenders,
+            'month',
+          ),
         ),
       ),
     )
   },
 )
 
-const leaderboardRenderer = (topReceivers, topSenders) => `
-These are the top receivers: 🏆\n
+const leaderboardRenderer = (topReceivers, topSenders, timePeriod) => `
+These are the top receivers for the last ${timePeriod}: 🏆\n
     🥇 <@${topReceivers[0] && topReceivers[0].slackId}>\n
     🥈 <@${topReceivers[1] && topReceivers[1].slackId}>\n
     🥉 <@${topReceivers[2] && topReceivers[2].slackId}>\n
 \n
-These are the top givers: ⛑\n
+These are the top givers for the last ${timePeriod}: ⛑\n
     🥇 <@${topSenders[0] && topSenders[0].slackId}>\n
     🥈 <@${topSenders[1] && topSenders[1].slackId}>\n
     🥉 <@${topSenders[2] && topSenders[2].slackId}>\n
