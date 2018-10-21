@@ -14,6 +14,7 @@ export const Mutation = {
             slackId: conversation.id,
             organiseCompetition: false,
             sendEngagementMessages: false,
+            adminSlackId: conversation.creator,
           },
           update: {},
         })
@@ -27,18 +28,21 @@ export const Mutation = {
     }
   },
   async createConversation(parent, { slackId, settings }, ctx: Context, info) {
-    const conversation = await ctx.db.mutation.createConversation(
+    const conversation = await ctx.slack.getConversationInfo(slackId)
+
+    const res = await ctx.db.mutation.createConversation(
       {
         data: {
           slackId,
           organiseCompetition: settings.organiseCompetition,
           sendEngagementMessages: settings.sendEngagementMessages,
+          adminSlackId: conversation.creator,
         },
       },
       info,
     )
 
-    return conversation
+    return res
   },
   async updateConversation(parent, { slackId, settings }, ctx: Context, info) {
     const conversation = await ctx.db.mutation.updateConversation(

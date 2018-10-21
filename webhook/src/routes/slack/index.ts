@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import { run } from './engine'
 import { handleSubscriptionEvent } from './subscriptions'
+import { handleActionEvent } from './actions'
 
 // Router
 
@@ -14,31 +15,9 @@ slack.post('/', async (req, res) => {
 
 slack.post('/actions', async (req, res) => {
   const payload = JSON.parse(req.body.payload)
+  const executed = await handleActionEvent(req, payload)
 
-  switch (payload.callback_id) {
-    case 'share_kudo': {
-      const [action] = payload.actions
-
-      switch (action.name) {
-        case 'share': {
-          const kudoId = action.value
-
-          return res.send({
-            response_type: 'in_channel',
-            text: 'Kudo shared!',
-          })
-        }
-        case 'dont-share': {
-          return res.send({
-            text: 'Maybe next time...',
-          })
-        }
-      }
-    }
-    default: {
-      return res.sendStatus(200)
-    }
-  }
+  res.send(executed)
 })
 
 slack.post('/events', async (req, res) => {

@@ -21,6 +21,71 @@ export interface SlackConversation {
   creator: string
 }
 
+export enum SlackMessageType {
+  'in_channel',
+  'ephemeral',
+}
+
+export interface SlackMessage {
+  text: string
+  response_type?: SlackMessageType
+  attachments?: SlackAttachment[]
+}
+
+export interface SlackAttachment {
+  pretext?: string
+  author_name?: string
+  title?: string
+  text: string
+  callback_id?: string
+  color?: string
+  actions?: SlackAction[]
+  image_url?: string
+  thumb_url?: string
+}
+
+export interface SlackAction {
+  name: string
+  text: string
+  type: string
+  value: string
+  style?: string
+}
+
+export interface SlackCommand {
+  token: string
+  team_id: string
+  team_domain: string
+  channel_id: string
+  channel_name: string
+  user_id: string
+  user_name: string
+  command: string
+  text: string
+  response_url: string
+  trigger_id: string
+}
+
+export interface SlackChannel {
+  id: string
+  name: string
+}
+
+export interface SlackUser {
+  id: string
+  name: string
+}
+
+export interface SlackAction {
+  type: string
+  callback_id: string
+  actions: SlackAction[]
+  channel: SlackChannel
+  user: SlackUser
+  original_message?: SlackMessage
+  response_url: string
+}
+
 export class Slack {
   private organization: string
   private apiToken: string
@@ -64,5 +129,24 @@ export class Slack {
     return this.executeMethod<any>('conversations.info', body).then(
       res => res.channel,
     )
+  }
+
+  async sendMessage(
+    channelSlackId: string,
+    message: SlackMessage,
+  ): Promise<void> {
+    const body = new URLSearchParams()
+
+    body.append('channel', channelSlackId)
+    body.append('text', message.text)
+    body.append('token', this.apiToken)
+
+    if (message.attachments) {
+      body.append('attachments', JSON.stringify(message.attachments))
+    }
+
+    return this.executeMethod<any>('chat.postMessage', body).then(res => {
+      return res.message
+    })
   }
 }

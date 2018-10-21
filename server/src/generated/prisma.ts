@@ -96,6 +96,7 @@ type Conversation implements Node {
   slackId: String!
   organiseCompetition: Boolean!
   sendEngagementMessages: Boolean!
+  adminSlackId: String!
 }
 
 """A connection to a list of items."""
@@ -112,6 +113,7 @@ input ConversationCreateInput {
   slackId: String!
   organiseCompetition: Boolean
   sendEngagementMessages: Boolean
+  adminSlackId: String!
 }
 
 input ConversationCreateOneInput {
@@ -141,6 +143,8 @@ enum ConversationOrderByInput {
   organiseCompetition_DESC
   sendEngagementMessages_ASC
   sendEngagementMessages_DESC
+  adminSlackId_ASC
+  adminSlackId_DESC
 }
 
 type ConversationPreviousValues {
@@ -150,6 +154,7 @@ type ConversationPreviousValues {
   slackId: String!
   organiseCompetition: Boolean!
   sendEngagementMessages: Boolean!
+  adminSlackId: String!
 }
 
 type ConversationSubscriptionPayload {
@@ -195,12 +200,14 @@ input ConversationUpdateDataInput {
   slackId: String
   organiseCompetition: Boolean
   sendEngagementMessages: Boolean
+  adminSlackId: String
 }
 
 input ConversationUpdateInput {
   slackId: String
   organiseCompetition: Boolean
   sendEngagementMessages: Boolean
+  adminSlackId: String
 }
 
 input ConversationUpdateOneRequiredInput {
@@ -356,6 +363,46 @@ input ConversationWhereInput {
 
   """All values that are not equal to given value."""
   sendEngagementMessages_not: Boolean
+  adminSlackId: String
+
+  """All values that are not equal to given value."""
+  adminSlackId_not: String
+
+  """All values that are contained in given list."""
+  adminSlackId_in: [String!]
+
+  """All values that are not contained in given list."""
+  adminSlackId_not_in: [String!]
+
+  """All values less than the given value."""
+  adminSlackId_lt: String
+
+  """All values less than or equal the given value."""
+  adminSlackId_lte: String
+
+  """All values greater than the given value."""
+  adminSlackId_gt: String
+
+  """All values greater than or equal the given value."""
+  adminSlackId_gte: String
+
+  """All values containing the given string."""
+  adminSlackId_contains: String
+
+  """All values not containing the given string."""
+  adminSlackId_not_contains: String
+
+  """All values starting with the given string."""
+  adminSlackId_starts_with: String
+
+  """All values not starting with the given string."""
+  adminSlackId_not_starts_with: String
+
+  """All values ending with the given string."""
+  adminSlackId_ends_with: String
+
+  """All values not ending with the given string."""
+  adminSlackId_not_ends_with: String
 }
 
 input ConversationWhereUniqueInput {
@@ -1132,7 +1179,9 @@ export type ConversationOrderByInput =   'id_ASC' |
   'organiseCompetition_ASC' |
   'organiseCompetition_DESC' |
   'sendEngagementMessages_ASC' |
-  'sendEngagementMessages_DESC'
+  'sendEngagementMessages_DESC' |
+  'adminSlackId_ASC' |
+  'adminSlackId_DESC'
 
 export type PrismaDatabase =   'default'
 
@@ -1262,6 +1311,20 @@ export interface ConversationWhereInput {
   organiseCompetition_not?: Boolean
   sendEngagementMessages?: Boolean
   sendEngagementMessages_not?: Boolean
+  adminSlackId?: String
+  adminSlackId_not?: String
+  adminSlackId_in?: String[] | String
+  adminSlackId_not_in?: String[] | String
+  adminSlackId_lt?: String
+  adminSlackId_lte?: String
+  adminSlackId_gt?: String
+  adminSlackId_gte?: String
+  adminSlackId_contains?: String
+  adminSlackId_not_contains?: String
+  adminSlackId_starts_with?: String
+  adminSlackId_not_starts_with?: String
+  adminSlackId_ends_with?: String
+  adminSlackId_not_ends_with?: String
 }
 
 export interface KudoCreateManyWithoutSentByInput {
@@ -1338,12 +1401,14 @@ export interface ConversationCreateInput {
   slackId: String
   organiseCompetition?: Boolean
   sendEngagementMessages?: Boolean
+  adminSlackId: String
 }
 
 export interface ConversationUpdateInput {
   slackId?: String
   organiseCompetition?: Boolean
   sendEngagementMessages?: Boolean
+  adminSlackId?: String
 }
 
 export interface KudoCreateManyWithoutReceivedByInput {
@@ -1416,6 +1481,7 @@ export interface ConversationUpdateDataInput {
   slackId?: String
   organiseCompetition?: Boolean
   sendEngagementMessages?: Boolean
+  adminSlackId?: String
 }
 
 export interface KudoSubscriptionWhereInput {
@@ -1570,6 +1636,7 @@ export interface ConversationPreviousValues {
   slackId: String
   organiseCompetition: Boolean
   sendEngagementMessages: Boolean
+  adminSlackId: String
 }
 
 /*
@@ -1679,6 +1746,7 @@ export interface Conversation extends Node {
   slackId: String
   organiseCompetition: Boolean
   sendEngagementMessages: Boolean
+  adminSlackId: String
 }
 
 export interface KudoSubscriptionPayload {

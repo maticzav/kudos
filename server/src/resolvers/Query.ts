@@ -16,4 +16,7 @@ export const Query = {
       info,
     )
   },
+  kudo(parent, { id }, ctx: Context, info) {
+    return ctx.db.query.kudo({ where: { id } }, info)
+  },
 }
