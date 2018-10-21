@@ -12,39 +12,74 @@ const slack = new Slack({
   apiToken: process.env.SLACK_API_TOKEN,
 })
 
+const sendWeekly = async () => {
+  const conversationsToNotify = await getCompetingConversations()
+
+  const leaderboards: Promise<any>[] = conversationsToNotify.map(
+    async conversation => {
+      const leaderboardsResponse = await getChannelLeaderboardWeek(
+        conversation.slackId,
+      )
+
+      return {
+        topReceivers: leaderboardsResponse.topReceivers,
+        topSenders: leaderboardsResponse.topSenders,
+        slackId: conversation.slackId,
+      }
+    },
+  )
+
+  Promise.all(leaderboards).then(res =>
+    res.forEach(leaderboard =>
+      slack.postToChannel(
+        leaderboard.slackId,
+        leaderboardRenderer(
+          leaderboard.topReceivers,
+          leaderboard.topSenders,
+          'week',
+        ),
+      ),
+    ),
+  )
+}
+
+const sendMonthly = async () => {
+  const conversationsToNotify = await getEngagedCompetitions()
+
+  const leaderboards: Promise<any>[] = conversationsToNotify.map(
+    async conversation => {
+      const leaderboardsResponse = await getChannelLeaderboardMonth(
+        conversation.slackId,
+      )
+
+      return {
+        topReceivers: leaderboardsResponse.topReceivers,
+        topSenders: leaderboardsResponse.topSenders,
+        slackId: conversation.slackId,
+      }
+    },
+  )
+
+  Promise.all(leaderboards).then(res =>
+    res.forEach(leaderboard =>
+      slack.postToChannel(
+        leaderboard.slackId,
+        leaderboardRenderer(
+          leaderboard.topReceivers,
+          leaderboard.topSenders,
+          'month',
+        ),
+      ),
+    ),
+  )
+}
+
 ontime(
   {
     cycle: ['1T12:00:00'],
   },
   async ot => {
-    const conversationsToNotify = await getCompetingConversations()
-
-    const leaderboards: Promise<any>[] = conversationsToNotify.map(
-      async conversation => {
-        const leaderboardsResponse = await getChannelLeaderboardWeek(
-          conversation.slackId,
-        )
-
-        return {
-          topReceivers: leaderboardsResponse.topReceivers,
-          topSenders: leaderboardsResponse.topSenders,
-          slackId: conversation.slackId,
-        }
-      },
-    )
-
-    Promise.all(leaderboards).then(res =>
-      res.forEach(leaderboard =>
-        slack.postToChannel(
-          leaderboard.slackId,
-          leaderboardRenderer(
-            leaderboard.topReceivers,
-            leaderboard.topSenders,
-            'week',
-          ),
-        ),
-      ),
-    )
+    sendWeekly()
   },
 )
 
@@ -53,34 +88,7 @@ ontime(
     cycle: ['Monday 12:00:00'],
   },
   async ot => {
-    const conversationsToNotify = await getEngagedCompetitions()
-
-    const leaderboards: Promise<any>[] = conversationsToNotify.map(
-      async conversation => {
-        const leaderboardsResponse = await getChannelLeaderboardMonth(
-          conversation.slackId,
-        )
-
-        return {
-          topReceivers: leaderboardsResponse.topReceivers,
-          topSenders: leaderboardsResponse.topSenders,
-          slackId: conversation.slackId,
-        }
-      },
-    )
-
-    Promise.all(leaderboards).then(res =>
-      res.forEach(leaderboard =>
-        slack.postToChannel(
-          leaderboard.slackId,
-          leaderboardRenderer(
-            leaderboard.topReceivers,
-            leaderboard.topSenders,
-            'month',
-          ),
-        ),
-      ),
-    )
+    sendMonthly()
   },
 )
 
@@ -97,5 +105,3 @@ These are the top givers for the last ${timePeriod}: ⛑\n
 \n
 💩 Everybody else
         `
-
-console.log("CHROMEN'")
